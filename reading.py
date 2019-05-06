@@ -87,24 +87,22 @@ for key, value in info.items():
 
 Ts = info['Sample Interval']
 Fs = 1/Ts
-#t = np.arange(0, 1, Ts)
 
 N = len(y)
 w = blackman(N)
 #w = hann(N)
-x = np.linspace(0.0, N*Ts, N)
+x = np.linspace(0.0, N*Ts, N) * 1E6
 yf = fftpack.fft(y * w)
 yf = 20*np.log10(abs(yf[:N//2]))
 xf = np.linspace(0.0, Fs/2, int(N/2))
 
 fig, ax = plt.subplots(2, 1)
-ax[0].plot(x,y)
-ax[0].set_xlabel('Tempo')
-ax[0].set_ylabel('Amplitude')
-#ax[1].plot(xf, 2.0/N * np.abs(yf[:N//2]))
-ax[1].plot(xf, yf)
+ax[0].plot(x, y, linewidth=0.8)
+ax[0].set_xlabel('Tempo (us)')
+ax[0].set_ylabel('Amplitude (V)')
+ax[1].plot(xf, yf, linewidth=0.8)
 ax[1].set_xlabel('Freq (Hz)')
-ax[1].set_ylabel('Y(f) [dB]')
+ax[1].set_ylabel('Amplitude (dB)')
 
 plt.show()
 
