@@ -83,7 +83,7 @@ def measurements(y):
 
     return measurements
 
-def ab_plot(file_a, file_b):
+def ab_plot(file_a, file_b, name_a='A', name_b='B'):
     x_a, y_a, info_a = read_tek_tds1012_csv(file_a)
     x_b, y_b, info_b = read_tek_tds1012_csv(file_b)
 
@@ -106,31 +106,35 @@ def ab_plot(file_a, file_b):
     xf_a = np.linspace(0.0, Fs_a/2, int(N_a/2))
     xf_b = np.linspace(0.0, Fs_b/2, int(N_b/2))
 
+    norm = np.max(y_a)/np.max(y_b)
+
     fig, ax = plt.subplots(2, 1)
-    ax[0].plot(x_a, y_a, linewidth=0.8, antialiased=None)
-    ax[0].plot(x_b, y_b, linewidth=0.8, antialiased=None)
+    ax[0].set_title(f'Comparação {name_a} e {name_b}')
+    ax[0].plot(x_a, y_a, linewidth=0.5, antialiased=None)
+    ax[0].plot(x_b, y_b, linewidth=0.5, antialiased=None)
+    ax[0].plot(x_b, y_b * norm, linewidth=0.5, antialiased=None, color='gray')
     ax[0].set_xlabel('Tempo (us)')
     ax[0].set_ylabel('Amplitude (V)')
-    #ax[0].set_legend(['a', 'b'])
-    ax[1].plot(xf_a, yf_a, linewidth=0.8, antialiased=None)
-    ax[1].plot(xf_b, yf_b, linewidth=0.8, antialiased=None)
+    ax[0].legend([name_a, name_b, f'{name_b} * {np.round(norm, 2)}'])
+    ax[1].plot(xf_a, yf_a, linewidth=0.5, antialiased=None)
+    ax[1].plot(xf_b, yf_b, linewidth=0.5, antialiased=None)
     ax[1].set_xlabel('Freq (Hz)')
     ax[1].set_ylabel('Amplitude (dB)')
-    #ax[1].set_legend(['a', 'b'])
+    ax[1].legend([name_a, name_b])
 
     plt.show()
 
-    print('Info for A:')
+    print(f'Info for {name_a}:')
     print_dict(info_a)
-    print('Info for B:')
+    print(f'Info for {name_b}:')
     print_dict(info_b)
-    print('Time Measurements for A:')
+    print(f'Time Measurements for {name_a}:')
     print_dict(measurements(y_a))
-    print('FFT Measurements for A:')
+    print(f'FFT Measurements for {name_a}:')
     print_dict(measurements(yf_a))
-    print('Time Measurements for B:')
+    print(f'Time Measurements for {name_b}:')
     print_dict(measurements(y_b))
-    print('FFT Measurements for B:')
+    print(f'FFT Measurements for {name_b}:')
     print_dict(measurements(yf_b))
 
 
@@ -138,6 +142,6 @@ def ab_plot(file_a, file_b):
 
 filename_a = '03.05/ALL0000/F0000CH1.CSV'
 filename_b = '03.05/ALL0004/F0004CH1.CSV'
-ab_plot(filename_a, filename_b)
+ab_plot(filename_a, filename_b, 'BNC', 'Placa 1')
 
 
