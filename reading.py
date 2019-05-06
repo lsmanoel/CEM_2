@@ -2,7 +2,9 @@
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy.fftpack
+from scipy import fftpack
+from scipy.signal import blackman
+#from scipy.signal import hann
 
 def read_tek_tds1012_csv(filename):
     raw_x = []
@@ -88,8 +90,10 @@ Fs = 1/Ts
 #t = np.arange(0, 1, Ts)
 
 N = len(y)
+w = blackman(N)
+#w = hann(N)
 x = np.linspace(0.0, N*Ts, N)
-yf = scipy.fftpack.fft(y)
+yf = fftpack.fft(y * w)
 yf = 20*np.log10(abs(yf[:N//2]))
 xf = np.linspace(0.0, Fs/2, int(N/2))
 
