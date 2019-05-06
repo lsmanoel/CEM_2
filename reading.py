@@ -90,7 +90,7 @@ Fs = 1/Ts
 N = len(y)
 x = np.linspace(0.0, N*Ts, N)
 yf = scipy.fftpack.fft(y)
-yx = 20*np.log10(abs(yf[:N//2]))
+yf = 20*np.log10(abs(yf[:N//2]))
 xf = np.linspace(0.0, Fs/2, int(N/2))
 
 fig, ax = plt.subplots(2, 1)
@@ -98,7 +98,7 @@ ax[0].plot(x,y)
 ax[0].set_xlabel('Tempo')
 ax[0].set_ylabel('Amplitude')
 #ax[1].plot(xf, 2.0/N * np.abs(yf[:N//2]))
-ax[1].plot(xf, yx)
+ax[1].plot(xf, yf)
 ax[1].set_xlabel('Freq (Hz)')
 ax[1].set_ylabel('|Y(f)|')
 
