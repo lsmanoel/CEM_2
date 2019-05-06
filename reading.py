@@ -104,7 +104,7 @@ ax[0].set_ylabel('Amplitude')
 #ax[1].plot(xf, 2.0/N * np.abs(yf[:N//2]))
 ax[1].plot(xf, yf)
 ax[1].set_xlabel('Freq (Hz)')
-ax[1].set_ylabel('|Y(f)|')
+ax[1].set_ylabel('Y(f) [dB]')
 
 plt.show()
 
