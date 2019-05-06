@@ -2,7 +2,9 @@
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy.fftpack
+from scipy import fftpack
+from scipy.signal import blackman
+#from scipy.signal import hann
 
 def read_tek_tds1012_csv(filename):
     raw_x = []
@@ -66,58 +68,87 @@ def read_tek_tds1012_csv(filename):
 
     return np.array(raw_x), np.array(raw_y), info
 
+def print_dict(dict):
+    for key, value in dict.items():
+        print(f'\t{key}: {value}')
+
+def measurements(y):
+    measurements = {
+        'Max': np.amax(y),
+        'Min': np.amin(y),
+        'Pk-Pk': np.ptp(y),
+        'Mean': np.mean(y),
+        'RMS': np.sqrt(np.mean(np.square(y))),
+    }
+
+    return measurements
+
+def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
+    x_a, y_a, info_a = read_tek_tds1012_csv(file_a)
+    x_b, y_b, info_b = read_tek_tds1012_csv(file_b)
 
 
-##############################
-# Gets data:
+    Ts_a = info_a['Sample Interval']
+    Ts_b = info_b['Sample Interval']
+    Fs_a = 1/Ts_a
+    Fs_b = 1/Ts_b
 
-filename = '03.05/ALL0000/F0000CH1.CSV'
-x, y, info = read_tek_tds1012_csv(filename)
+    N_a = len(y_a)
+    N_b = len(y_b)
+    w_a = blackman(N_a)
+    w_b = blackman(N_b)
+    x_a = np.linspace(0.0, N_a * Ts_a, N_a) * 1E6
+    x_b = np.linspace(0.0, N_b * Ts_b, N_b) * 1E6
+    yf_a = fftpack.fft(y_a * w_a)
+    yf_b = fftpack.fft(y_b * w_b)
+    yf_a = 20 * np.log10(abs(yf_a[:N_a//2]))
+    yf_b = 20 * np.log10(abs(yf_b[:N_b//2]))
+    xf_a = np.linspace(0.0, Fs_a/2, int(N_a/2))
+    xf_b = np.linspace(0.0, Fs_b/2, int(N_b/2))
 
-print('\nInfo:')
-for key, value in info.items():
-    print(f'\t{key}: {value}')
+    norm = np.max(y_a)/np.max(y_b)
+
+    fig, ax = plt.subplots(2, 1)
+    ax[0].set_title(f'Comparação {name_a} e {name_b}')
+    ax[0].plot(x_a, y_a, linewidth=0.5, antialiased=None)
+    ax[0].plot(x_b, y_b, linewidth=0.5, antialiased=None)
+    if normalize:
+        ax[0].plot(x_b, y_b * norm, lw=0.5, aa=None, color='gray', alpha=0.5)
+    ax[0].set_xlabel('Tempo (us)')
+    ax[0].set_ylabel('Amplitude (V)')
+    if normalize:
+        ax[0].legend([name_a, name_b, f'{name_b} * {np.round(norm, 2)}'])
+    else:
+        ax[0].legend([name_a, name_b])
+    ax[1].plot(xf_a, yf_a, linewidth=0.5, antialiased=None)
+    ax[1].plot(xf_b, yf_b, linewidth=0.5, antialiased=None)
+    ax[1].set_xlabel('Freq (Hz)')
+    ax[1].set_ylabel('Amplitude (dB)')
+    ax[1].legend([name_a, name_b])
+
+    plt.show()
+
+    print(f'Info for {name_a}:')
+    print_dict(info_a)
+    print(f'Info for {name_b}:')
+    print_dict(info_b)
+    print(f'Time Measurements for {name_a}:')
+    print_dict(measurements(y_a))
+    print(f'FFT Measurements for {name_a}:')
+    print_dict(measurements(yf_a))
+    print(f'Time Measurements for {name_b}:')
+    print_dict(measurements(y_b))
+    print(f'FFT Measurements for {name_b}:')
+    print_dict(measurements(yf_b))
 
 
+# A/B examples:
 
-##############################
-# Plots in time and freq
+filename_a = '03.05/ALL0000/F0000CH1.CSV'
+filename_b = '03.05/ALL0001/F0001CH1.CSV'
+ab_plot(filename_a, filename_b, 'BNC', 'COAX', normalize=False)
 
-Ts = info['Sample Interval']
-Fs = 1/Ts
-#t = np.arange(0, 1, Ts)
-
-N = len(y)
-x = np.linspace(0.0, N*Ts, N)
-yf = scipy.fftpack.fft(y)
-yx = 20*np.log10(abs(yf[:N//2]))
-xf = np.linspace(0.0, Fs/2, int(N/2))
-
-fig, ax = plt.subplots(2, 1)
-ax[0].plot(x,y)
-ax[0].set_xlabel('Tempo')
-ax[0].set_ylabel('Amplitude')
-#ax[1].plot(xf, 2.0/N * np.abs(yf[:N//2]))
-ax[1].plot(xf, yx)
-ax[1].set_xlabel('Freq (Hz)')
-ax[1].set_ylabel('|Y(f)|')
-
-plt.show()
-
-
-
-#############################
-# Basic measurements
-
-print('\nMeasurements:')
-measurements = {
-    'Max': np.amax(y),
-    'Min': np.amin(y),
-    'Pk-Pk': np.ptp(y),
-    'Mean': np.mean(y),
-    'RMS': np.sqrt(np.mean(np.square(y))),
-}
-
-for key, value in measurements.items():
-    print(f'\t{key}: {value}')
+filename_a = '03.05/ALL0000/F0000CH1.CSV'
+filename_b = '03.05/ALL0004/F0004CH1.CSV'
+ab_plot(filename_a, filename_b, 'COAX', 'Placa 1')
 
