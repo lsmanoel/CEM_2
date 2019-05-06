@@ -83,7 +83,7 @@ def measurements(y):
 
     return measurements
 
-def ab_plot(file_a, file_b, name_a='A', name_b='B'):
+def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     x_a, y_a, info_a = read_tek_tds1012_csv(file_a)
     x_b, y_b, info_b = read_tek_tds1012_csv(file_b)
 
@@ -112,10 +112,14 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B'):
     ax[0].set_title(f'Comparação {name_a} e {name_b}')
     ax[0].plot(x_a, y_a, linewidth=0.5, antialiased=None)
     ax[0].plot(x_b, y_b, linewidth=0.5, antialiased=None)
-    ax[0].plot(x_b, y_b * norm, linewidth=0.5, antialiased=None, color='gray')
+    if normalize:
+        ax[0].plot(x_b, y_b * norm, lw=0.5, aa=None, color='gray', alpha=0.5)
     ax[0].set_xlabel('Tempo (us)')
     ax[0].set_ylabel('Amplitude (V)')
-    ax[0].legend([name_a, name_b, f'{name_b} * {np.round(norm, 2)}'])
+    if normalize:
+        ax[0].legend([name_a, name_b, f'{name_b} * {np.round(norm, 2)}'])
+    else:
+        ax[0].legend([name_a, name_b])
     ax[1].plot(xf_a, yf_a, linewidth=0.5, antialiased=None)
     ax[1].plot(xf_b, yf_b, linewidth=0.5, antialiased=None)
     ax[1].set_xlabel('Freq (Hz)')
@@ -138,10 +142,13 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B'):
     print_dict(measurements(yf_b))
 
 
-# A/B example:
+# A/B examples:
+
+filename_a = '03.05/ALL0000/F0000CH1.CSV'
+filename_b = '03.05/ALL0001/F0001CH1.CSV'
+ab_plot(filename_a, filename_b, 'BNC', 'COAX', normalize=False)
 
 filename_a = '03.05/ALL0000/F0000CH1.CSV'
 filename_b = '03.05/ALL0004/F0004CH1.CSV'
-ab_plot(filename_a, filename_b, 'BNC', 'Placa 1')
-
+ab_plot(filename_a, filename_b, 'COAX', 'Placa 1')
 
