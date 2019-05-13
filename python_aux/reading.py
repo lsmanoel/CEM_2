@@ -129,7 +129,7 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
 
     # Correlation:
     correlation = np.corrcoef(y_a, y_b)[1, 0];
-    cross_correlation = signal.correlate(y_a, y_b)
+    #cross_correlation = signal.correlate(y_a, y_b)
     #ax[2].plot(cross_correlation, linewidth=0.5, antialiased=None)
     #ax[2].set_ylabel('Correlação cruzada')
     #ax[2].legend([f'{name_a} vs {name_b}'])
