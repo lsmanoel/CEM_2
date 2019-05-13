@@ -90,6 +90,22 @@ class ReaderCSV:
 	
 	    return measurements
 	
+	def list_plot(
+				self,
+				file_list,
+				normalize=True):
+
+		x_list=[]
+		y_list=[]
+		info_list=[]
+
+		for file in file_list:
+			x, y, info = self.read_tek_tds1012_csv(file)
+			x_list.append(x)
+			y_list.append(y)
+			info_list.append(info)
+		
+
 	def ab_plot(
 				self, 
 				file_a, 
