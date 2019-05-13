@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import fftpack
 from scipy.signal import blackman
+#from scipy import signal
 #from scipy.signal import hann
 
 def read_tek_tds1012_csv(filename):
@@ -106,14 +107,14 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     xf_a = np.linspace(0.0, Fs_a/2, int(N_a/2))
     xf_b = np.linspace(0.0, Fs_b/2, int(N_b/2))
 
-    norm = np.max(y_a)/np.max(y_b)
+    norm = (np.max(y_a)-np.min(y_a)) / (np.max(y_b) -np.min(y_b))
 
     fig, ax = plt.subplots(2, 1)
     ax[0].set_title(f'Comparação {name_a} e {name_b}')
     ax[0].plot(x_a, y_a, linewidth=0.5, antialiased=None)
     ax[0].plot(x_b, y_b, linewidth=0.5, antialiased=None)
     if normalize:
-        ax[0].plot(x_b, y_b * norm, lw=0.5, aa=None, color='gray', alpha=0.5)
+        ax[0].plot(x_b, y_b * norm + np.mean(y_a), lw=0.5, aa=None, color='gray', alpha=0.5)
     ax[0].set_xlabel('Tempo (us)')
     ax[0].set_ylabel('Amplitude (V)')
     if normalize:
@@ -125,6 +126,13 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     ax[1].set_xlabel('Freq (Hz)')
     ax[1].set_ylabel('Amplitude (dB)')
     ax[1].legend([name_a, name_b])
+
+    # Correlation:
+    correlation = np.corrcoef(y_a, y_b)[1, 0];
+    cross_correlation = signal.correlate(y_a, y_b)
+    #ax[2].plot(cross_correlation, linewidth=0.5, antialiased=None)
+    #ax[2].set_ylabel('Correlação cruzada')
+    #ax[2].legend([f'{name_a} vs {name_b}'])
 
     plt.show()
 
@@ -140,15 +148,16 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     print_dict(measurements(y_b))
     print(f'FFT Measurements for {name_b}:')
     print_dict(measurements(yf_b))
+    print(f'Correlation: {correlation}')
 
 
 # A/B examples:
 
-filename_a = '03.05/ALL0000/F0000CH1.CSV'
-filename_b = '03.05/ALL0001/F0001CH1.CSV'
-ab_plot(filename_a, filename_b, 'BNC', 'COAX', normalize=False)
+filename_a = '../13.05/ALL0000/F0000CH1.CSV'
+filename_b = '../13.05/ALL0001/F0001CH1.CSV'
+ab_plot(filename_a, filename_b, 'BNC', 'COAX')
 
-filename_a = '03.05/ALL0000/F0000CH1.CSV'
-filename_b = '03.05/ALL0004/F0004CH1.CSV'
+filename_a = '../13.05/ALL0000/F0000CH1.CSV'
+filename_b = '../13.05/ALL0002/F0002CH1.CSV'
 ab_plot(filename_a, filename_b, 'COAX', 'Placa 1')
 
