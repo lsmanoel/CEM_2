@@ -5,7 +5,22 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import fftpack
-from scipy.signal import blackman
+from scipy.signal import hann
+
+plt.style.use('fivethirtyeight')
+# plt.style.use('dark_background')
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = 'Ubuntu'
+plt.rcParams['font.monospace'] = 'Ubuntu Mono'
+plt.rcParams['font.size'] = 10
+plt.rcParams['axes.labelsize'] = 10
+plt.rcParams['axes.labelweight'] = 'bold'
+plt.rcParams['xtick.labelsize'] = 8
+plt.rcParams['ytick.labelsize'] = 8
+plt.rcParams['legend.fontsize'] = 10
+plt.rcParams['figure.titlesize'] = 12
+plt.rcParams['lines.linewidth'] = 0.5
+plt.rcParams['lines.antialiased'] = False
 
 
 def read_tek_tds1012_csv(filename):
@@ -92,43 +107,49 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     x_a, y_a, info_a = read_tek_tds1012_csv(file_a)
     x_b, y_b, info_b = read_tek_tds1012_csv(file_b)
 
+    F_signal = 2E6
+    T_signal = 1 / F_signal
+
     Ts_a = info_a['Sample Interval']
     Ts_b = info_b['Sample Interval']
-    Fs_a = 1 / Ts_a
-    Fs_b = 1 / Ts_b
+    N_a = int(((len(x_a) * Ts_a) // T_signal) * round(T_signal / Ts_a))
+    N_b = int(((len(x_b) * Ts_b) // T_signal) * round(T_signal / Ts_b))
 
-    N_a = len(y_a)
-    N_b = len(y_b)
-    w_a = blackman(N_a)
-    w_b = blackman(N_b)
+    y_a = y_a[:N_a]
+    y_b = y_b[:N_b]
+
+    w_a = 1#hann(N_a)
+    w_b = 1#hann(N_b)
     x_a = np.linspace(0.0, N_a * Ts_a, N_a) * 1E6
     x_b = np.linspace(0.0, N_b * Ts_b, N_b) * 1E6
-    yf_a = fftpack.fft(y_a * w_a)
-    yf_b = fftpack.fft(y_b * w_b)
-    yf_a = 20 * np.log10(abs(yf_a[:N_a // 2]))
-    yf_b = 20 * np.log10(abs(yf_b[:N_b // 2]))
-    xf_a = np.linspace(0.0, Fs_a / 2, int(N_a / 2))
-    xf_b = np.linspace(0.0, Fs_b / 2, int(N_b / 2))
+    yf_a = abs(fftpack.rfft(y_a * w_a))
+    fft_norm = max(yf_a)
+    yf_a = 20 * np.log10(yf_a / fft_norm)
+    yf_b = abs(fftpack.rfft(y_b * w_b))
+    yf_b = 20 * np.log10(yf_b / fft_norm)
+
+    xf_a = fftpack.rfftfreq(N_a, Ts_a) * 1E-6
+    xf_b = fftpack.rfftfreq(N_b, Ts_b) * 1E-6
 
     norm = (np.max(y_a) - np.min(y_a)) / (np.max(y_b) - np.min(y_b))
 
     fig, ax = plt.subplots(2, 1)
     ax[0].set_title(f'Comparação {name_a} e {name_b}')
-    ax[0].plot(x_a, y_a, linewidth=0.5, antialiased=None)
-    ax[0].plot(x_b, y_b, linewidth=0.5, antialiased=None)
+    ax[0].plot(x_a, y_a)
+    ax[0].plot(x_b, y_b)
     if normalize:
-        ax[0].plot(x_b, y_b * norm + np.mean(y_a), lw=0.5,
-                   aa=None, color='gray', alpha=0.5)
+        ax[0].plot(x_b, y_b * norm + np.mean(y_a), color='grey', alpha=0.5)
     ax[0].set_xlabel('Tempo (us)')
     ax[0].set_ylabel('Amplitude (V)')
     if normalize:
         ax[0].legend([name_a, name_b, f'{name_b} * {np.round(norm, 2)}'])
     else:
         ax[0].legend([name_a, name_b])
-    ax[1].plot(xf_a, yf_a, linewidth=0.5, antialiased=None)
-    ax[1].plot(xf_b, yf_b, linewidth=0.5, antialiased=None)
-    ax[1].set_xlabel('Freq (Hz)')
+    ax[1].plot(xf_a, yf_a)
+    ax[1].plot(xf_b, yf_b)
+    ax[1].set_xlabel('Freq (MHz)')
     ax[1].set_ylabel('Amplitude (dB)')
+    ax[1].set_xlim([0, 25])
     ax[1].legend([name_a, name_b])
 
     # Correlation:
@@ -152,11 +173,11 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
 
 
 # A/B examples:
-'''
+
 filename_a = '../13.05/ALL0000/F0000CH1.CSV'
 filename_b = '../13.05/ALL0001/F0001CH1.CSV'
 ab_plot(filename_a, filename_b, 'BNC', 'COAX')
-
+'''
 filename_a = '../13.05/ALL0000/F0000CH1.CSV'
 filename_b = '../13.05/ALL0002/F0002CH1.CSV'
 ab_plot(filename_a, filename_b, 'COAX', 'Placa 1')
