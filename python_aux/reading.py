@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
+import pandas as pd
+import json
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import fftpack
 from scipy.signal import blackman
-#from scipy import signal
-#from scipy.signal import hann
+
 
 def read_tek_tds1012_csv(filename):
     raw_x = []
@@ -69,9 +70,11 @@ def read_tek_tds1012_csv(filename):
 
     return np.array(raw_x), np.array(raw_y), info
 
+
 def print_dict(dict):
     for key, value in dict.items():
         print(f'\t{key}: {value}')
+
 
 def measurements(y):
     measurements = {
@@ -84,15 +87,15 @@ def measurements(y):
 
     return measurements
 
+
 def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     x_a, y_a, info_a = read_tek_tds1012_csv(file_a)
     x_b, y_b, info_b = read_tek_tds1012_csv(file_b)
 
-
     Ts_a = info_a['Sample Interval']
     Ts_b = info_b['Sample Interval']
-    Fs_a = 1/Ts_a
-    Fs_b = 1/Ts_b
+    Fs_a = 1 / Ts_a
+    Fs_b = 1 / Ts_b
 
     N_a = len(y_a)
     N_b = len(y_b)
@@ -102,19 +105,20 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     x_b = np.linspace(0.0, N_b * Ts_b, N_b) * 1E6
     yf_a = fftpack.fft(y_a * w_a)
     yf_b = fftpack.fft(y_b * w_b)
-    yf_a = 20 * np.log10(abs(yf_a[:N_a//2]))
-    yf_b = 20 * np.log10(abs(yf_b[:N_b//2]))
-    xf_a = np.linspace(0.0, Fs_a/2, int(N_a/2))
-    xf_b = np.linspace(0.0, Fs_b/2, int(N_b/2))
+    yf_a = 20 * np.log10(abs(yf_a[:N_a // 2]))
+    yf_b = 20 * np.log10(abs(yf_b[:N_b // 2]))
+    xf_a = np.linspace(0.0, Fs_a / 2, int(N_a / 2))
+    xf_b = np.linspace(0.0, Fs_b / 2, int(N_b / 2))
 
-    norm = (np.max(y_a)-np.min(y_a)) / (np.max(y_b) -np.min(y_b))
+    norm = (np.max(y_a) - np.min(y_a)) / (np.max(y_b) - np.min(y_b))
 
     fig, ax = plt.subplots(2, 1)
     ax[0].set_title(f'Comparação {name_a} e {name_b}')
     ax[0].plot(x_a, y_a, linewidth=0.5, antialiased=None)
     ax[0].plot(x_b, y_b, linewidth=0.5, antialiased=None)
     if normalize:
-        ax[0].plot(x_b, y_b * norm + np.mean(y_a), lw=0.5, aa=None, color='gray', alpha=0.5)
+        ax[0].plot(x_b, y_b * norm + np.mean(y_a), lw=0.5,
+                   aa=None, color='gray', alpha=0.5)
     ax[0].set_xlabel('Tempo (us)')
     ax[0].set_ylabel('Amplitude (V)')
     if normalize:
@@ -128,11 +132,7 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     ax[1].legend([name_a, name_b])
 
     # Correlation:
-    correlation = np.corrcoef(y_a, y_b)[1, 0];
-    #cross_correlation = signal.correlate(y_a, y_b)
-    #ax[2].plot(cross_correlation, linewidth=0.5, antialiased=None)
-    #ax[2].set_ylabel('Correlação cruzada')
-    #ax[2].legend([f'{name_a} vs {name_b}'])
+    correlation = np.corrcoef(y_a, y_b)[1, 0]
 
     plt.show()
 
@@ -152,7 +152,7 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
 
 
 # A/B examples:
-
+'''
 filename_a = '../13.05/ALL0000/F0000CH1.CSV'
 filename_b = '../13.05/ALL0001/F0001CH1.CSV'
 ab_plot(filename_a, filename_b, 'BNC', 'COAX')
@@ -160,4 +160,51 @@ ab_plot(filename_a, filename_b, 'BNC', 'COAX')
 filename_a = '../13.05/ALL0000/F0000CH1.CSV'
 filename_b = '../13.05/ALL0002/F0002CH1.CSV'
 ab_plot(filename_a, filename_b, 'COAX', 'Placa 1')
+'''
 
+########################################################################
+########################################################################
+########################################################################
+
+
+def print_dict_utf8(dictionary):
+    print(json.dumps(dictionary, sort_keys=True, indent=2, ensure_ascii=False))
+
+
+def import_comparison_table(filename):
+    df = pd.read_csv(filename, encoding='UTF-8')
+    df.replace(np.nan, '', regex=True, inplace=True)
+
+    df['A'] = df.apply(lambda row: {
+        'Placa': row['Placa A'],
+        'Legenda': row['Legenda A'],
+        'Arquivo': row['Arquivo A'],
+    }, axis=1)
+    df.drop(['Placa A', 'Legenda A', 'Arquivo A'], axis=1, inplace=True)
+
+    df['B'] = df.apply(lambda row: {
+        'Placa': row['Placa B'],
+        'Legenda': row['Legenda B'],
+        'Arquivo': row['Arquivo B'],
+    }, axis=1)
+    df.drop(['Placa B', 'Legenda B', 'Arquivo B'], axis=1, inplace=True)
+
+    df['C'] = df.apply(lambda row: {
+        'Placa': row['Placa C'],
+        'Legenda': row['Legenda C'],
+        'Arquivo': row['Arquivo C'],
+    }, axis=1)
+    df.drop(['Placa C', 'Legenda C', 'Arquivo C'], axis=1, inplace=True)
+
+    return df.transpose().to_dict()
+
+
+# Comparison table example:
+csvtable = '../CEM - 03.05 - Comparações.csv'
+
+data = import_comparison_table(csvtable)
+
+print_dict_utf8(data)
+
+
+# end
