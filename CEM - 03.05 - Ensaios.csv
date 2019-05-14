@@ -1,0 +1,65 @@
+Data,Placa,Nó Emissor,Nó Receptor,Referência,img osc,obs
+03/05/2019,BNC ONLY,bnc1,bnc2,,ALL0000,tempo
+03/05/2019,BNC ONLY,bnc1,bnc2,,ALL0003,freq
+03/05/2019,COAX ONLY,cabo 1,cabo 1,,ALL0001,tempo
+03/05/2019,COAX ONLY,cabo 1,cabo 1,,ALL0002,freq
+03/05/2019,placa 1,trilha direita,trilha esquerda,,ALL0004,tempo
+03/05/2019,placa 1,trilha direita,trilha esquerda,,ALL0005,freq
+06/05/2019,COAX ONLY,cabo 1,cabo 1,,ALL0007,cabo coaxial direto entre gerador e osciloscópio
+06/05/2019,BNC ONLY,bnc1,bnc2,,ALL0008,cabo coaxial com conectores BNC entre gerador e osciloscópio
+06/05/2019,placa 1,trilha direita,trilha esquerda,,ALL0009,
+06/05/2019,placa 2,trilha direita,trilha esquerda,,ALL0010,
+06/05/2019,placa 3,trilha direita,trilha esquerda,,ALL0011,
+06/05/2019,placa 4,trilha direita,trilha esquerda,desconectado,ALL0012,
+06/05/2019,placa 4,trilha direita,trilha esquerda,trilha central,ALL0013,
+06/05/2019,placa 4,trilha direita,trilha central,desconectado,ALL0014,
+06/05/2019,placa 4,trilha direita,trilha central,trilha esquerda,ALL0015,
+06/05/2019,placa 5,trilha direita,trilha esquerda,desconectado,ALL0016,
+06/05/2019,placa 5,trilha direita,malha,trilha esquerda,ALL0017,
+06/05/2019,placa 5,trilha direita,trilha esquerda,malha,ALL0018,
+06/05/2019,placa 6,trilha direita,trilha esquerda,desconectado,ALL0019,
+06/05/2019,placa 6,trilha direita,trilha esquerda,malha,ALL0020,
+06/05/2019,fio de protoboard 2 vias,fio direita,fio esquerda,,ALL0022,
+06/05/2019,fio de protoboard 3 vias,fio direita,fio esquerda,fio central,ALL0023,
+06/05/2019,fio de protoboard 3 vias,fio direita,fio esquerda,desconectado,ALL0024,
+06/05/2019,placa 7,trilha direita,trilha esquerda,desconectado,ALL0025,
+06/05/2019,placa 7,trilha direita,trilha esquerda,malha,ALL0026,
+06/05/2019,placa 8,trilha direita,trilha esquerda,desconectado,ALL0027,
+06/05/2019,placa 8,trilha direita,trilha esquerda,trilha central,ALL0028,
+06/05/2019,placa 8,trilha direita,trilha esquerda,trilha central e malha,ALL0029,
+06/05/2019,placa 8,trilha direita,trilha esquerda,malha,ALL0030,
+06/05/2019,placa 8,trilha direita,trilha central,desconectado,ALL0031,
+06/05/2019,placa 8,trilha direita,trilha central,trilha esquerda,ALL0032,
+06/05/2019,placa 8,trilha direita,trilha central,trilha esquerda e malha,ALL0033,
+06/05/2019,placa 8,trilha direita,trilha central,malha,ALL0034,
+06/05/2019,placa 9,inicio da trilha,fim da trilha,,ALL0035,
+06/05/2019,placa 9,inicio da trilha,fim da trilha,,ALL0036,"Ch1 -> BNC, Ch2 -> Ponteira Tektronix"
+06/05/2019,placa 9,inicio da trilha,fim da trilha,,ALL0037,Detalhe no formato de onda com a conexão adicional ao circuito da ponteira Tektronix no Ch2 do osciloscópio
+06/05/2019,placa 9,inicio da trilha,fim da trilha,,ALL0038,Detalhe no formato de onda com a desconexão adicional ao circuito da ponteira Tektronix no Ch2 do osciloscópio
+13/05/2019,DIRECT,BNC jacaré,Tektronix,,ALL0000,cabos entre gerador e osciloscópio
+13/05/2019,placa 1,trilha direita,trilha esquerda,,ALL0001,
+13/05/2019,placa 2,trilha direita,trilha esquerda,,ALL0002,
+13/05/2019,placa 3,trilha direita,trilha esquerda,,ALL0003,
+13/05/2019,placa 4,trilha direita,trilha esquerda,desconectado,ALL0004,
+13/05/2019,placa 4,trilha direita,trilha esquerda,trilha central,ALL0005,
+13/05/2019,placa 4,trilha direita,trilha central,desconectado,ALL0006,
+13/05/2019,placa 4,trilha direita,trilha central,trilha esquerda,ALL0007,
+13/05/2019,placa 5,trilha direita,trilha esquerda,desconectado,ALL0008,
+13/05/2019,placa 5,trilha direita,malha,trilha esquerda,ALL0009,
+13/05/2019,placa 5,trilha direita,trilha esquerda,malha,ALL0010,
+13/05/2019,placa 6,trilha direita,trilha esquerda,desconectado,ALL0011,
+13/05/2019,placa 6,trilha direita,trilha esquerda,malha,ALL0012,
+13/05/2019,fio de protoboard 2 vias,fio direita,fio central,,ALL0013,
+13/05/2019,fio de protoboard 3 vias,fio direita,fio esquerda,fio central,ALL0014,
+13/05/2019,fio de protoboard 3 vias,fio direita,fio esquerda,desconectado,ALL0015,
+13/05/2019,placa 7,trilha direita,trilha esquerda,desconectado,ALL0016,
+13/05/2019,placa 7,trilha direita,trilha esquerda,malha,ALL0017,
+13/05/2019,placa 8,trilha direita,trilha esquerda,desconectado,ALL0018,
+13/05/2019,placa 8,trilha direita,trilha esquerda,trilha central,ALL0019,
+13/05/2019,placa 8,trilha direita,trilha esquerda,trilha central e malha,ALL0020,
+13/05/2019,placa 8,trilha direita,trilha esquerda,malha,ALL0021,
+13/05/2019,placa 8,trilha direita,trilha central,desconectado,ALL0022,
+13/05/2019,placa 8,trilha direita,trilha central,trilha esquerda,ALL0023,
+13/05/2019,placa 8,trilha direita,trilha central,trilha esquerda e malha,ALL0024,
+13/05/2019,placa 8,trilha direita,trilha central,malha,ALL0025,
+13/05/2019,placa 9,inicio da trilha,fim da trilha,,ALL0026,
