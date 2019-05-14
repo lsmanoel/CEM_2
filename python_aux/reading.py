@@ -122,14 +122,14 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     w_b = 1#hann(N_b)
     x_a = np.linspace(0.0, N_a * Ts_a, N_a) * 1E6
     x_b = np.linspace(0.0, N_b * Ts_b, N_b) * 1E6
-    yf_a = abs(fftpack.rfft(y_a * w_a))
+    yf_a = abs(np.fft.rfft(y_a * w_a))
     fft_norm = max(yf_a)
     yf_a = 20 * np.log10(yf_a / fft_norm)
-    yf_b = abs(fftpack.rfft(y_b * w_b))
+    yf_b = abs(np.fft.rfft(y_b * w_b))
     yf_b = 20 * np.log10(yf_b / fft_norm)
 
-    xf_a = fftpack.rfftfreq(N_a, Ts_a) * 1E-6
-    xf_b = fftpack.rfftfreq(N_b, Ts_b) * 1E-6
+    xf_a = np.linspace(0.0, 1/Ts_a, N_a//2 + 1) * 1E-6
+    xf_b = xf_a
 
     norm = (np.max(y_a) - np.min(y_a)) / (np.max(y_b) - np.min(y_b))
 
@@ -149,7 +149,7 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     ax[1].plot(xf_b, yf_b)
     ax[1].set_xlabel('Freq (MHz)')
     ax[1].set_ylabel('Amplitude (dB)')
-    ax[1].set_xlim([0, 25])
+    ax[1].set_xlim([0, 125]) # 125 MHz
     ax[1].legend([name_a, name_b])
 
     # Correlation:
