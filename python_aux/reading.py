@@ -175,26 +175,18 @@ def import_comparison_table(filename):
     df = pd.read_csv(filename, encoding='UTF-8')
     df.replace(np.nan, '', regex=True, inplace=True)
 
-    df['A'] = df.apply(lambda row: {
-        'Placa': row['Placa A'],
-        'Legenda': row['Legenda A'],
-        'Arquivo': row['Arquivo A'],
-    }, axis=1)
-    df.drop(['Placa A', 'Legenda A', 'Arquivo A'], axis=1, inplace=True)
+    def combineIntoDict(name):
+        cols = [f'Placa {name}', f'Legenda {name}', f'Arquivo {name}']
+        df[name] = df.apply(lambda row: {
+            'Placa': row[cols[0]],
+            'Legenda': row[cols[1]],
+            'Arquivo': row[cols[2]],
+        }, axis=1)
+        df.drop(cols, axis=1, inplace=True)
 
-    df['B'] = df.apply(lambda row: {
-        'Placa': row['Placa B'],
-        'Legenda': row['Legenda B'],
-        'Arquivo': row['Arquivo B'],
-    }, axis=1)
-    df.drop(['Placa B', 'Legenda B', 'Arquivo B'], axis=1, inplace=True)
-
-    df['C'] = df.apply(lambda row: {
-        'Placa': row['Placa C'],
-        'Legenda': row['Legenda C'],
-        'Arquivo': row['Arquivo C'],
-    }, axis=1)
-    df.drop(['Placa C', 'Legenda C', 'Arquivo C'], axis=1, inplace=True)
+    combineIntoDict('A')
+    combineIntoDict('B')
+    combineIntoDict('C')
 
     return df.transpose().to_dict()
 
