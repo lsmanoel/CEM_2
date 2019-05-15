@@ -107,15 +107,19 @@ class DataList(object):
 		print("file_list_2_data_list()")
 		# ==================================================
 		# -- > Empacotamento
-		#	_data_list [-index][-type]
-		#		[index]								- index
-		#		[0:info_dict | 1:data_array] 		- type
+		#	data_list []{}
+		#		[index]					- index
+		#		{'info':info_dict, 
+		#		 'data':data_dict}		- type
 		#
-		#	data_array[:, 0]:x  
-		#				  1]:y  
-		#				  2]:xf  
-		#				  3]:yf 
-		#				  4]:yf_dB]
+		#	data_dict
+		#	{
+		#		't'		: tempo		  
+		#		'x'		: amplitude pelo tempo 		  
+		#		'f'		: frequência 		  
+		#		'H'		: amplitude pela frequência 		 
+		#		'H_dB	: amplitude_dB pela frequência	
+		#	}
 		# ==================================================
 		data_list = []
 		# --------------------------------------------------
@@ -133,14 +137,17 @@ class DataList(object):
 			w = blackman(N)
 
 			data_dict = {
-				'x' 		:np.linspace(0.0, N * Ts, N) * 1E6,
-				'y'			:y,
-				'xf'		:np.linspace(0.0, fs/2, N) ,
-				'yf'		:fftpack.fft(y * w) ,
-				'yf_dB'		:20*np.log10(abs(data_array[:, 3]))
+				't' 		:np.linspace(0.0, N * Ts, N) * 1E6,
+				'x'			:y,
+				'f'			:np.linspace(0.0, fs/2, N) ,
+				'H'			:fftpack.fft(y * w) ,
+				'H_dB'		:20*np.log10(abs(data_array[:, 3]))
 			}
 			
-			data_list.append({'info':info_dict, 'array':data_array})
+			data_list.append({
+				'info'		:info_dict, 
+				'data'		:data_dict
+			})
 		# --------------------------------------------------
 		print("len(data_list): ", len(data_list))
 		# ==================================================
