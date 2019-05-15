@@ -11,25 +11,26 @@ from scipy.signal import blackman
 #===============================================================
 # **************************************************************
 class DataList(object):
-	"""docstring for DataList"""
 	def __init__(self, file_list):
 		super(DataList, self).__init__()
+
 		self._file_list = file_list
 
-		# ======================================================
+		# ==================================================
 		# -- > Empacotamento
-		#	_data_list [-index][-type]
-		#		[index]								- index
-		#		[0:info_dict | 1:data_array] 		- type
+		#	data_list [index]{info, data}
+		#		'info'	: informações sobre o dado, 
+		#		'data'	: conteúdo do dado
 		#
-		#	data_array[:, 0]:x  
-		#				  1]:y  
-		#				  2]:xf  
-		#				  3]:yf 
-		#				  4]:yf_dB]
-		# =====================================================
+		#	data_dict{[t][x][f][H][H_db])
+		#		't'		: tempo				[np.array]		  
+		#		'x'		: amp / tempo 		[np.array] 		  
+		#		'f'		: freq				[np.array] 		  
+		#		'H'		: amp / freq		[np.array] 		 
+		#		'H_dB'	: amp_dB / freq		[np.array]
+		#	
 		self._data_list = self.file_list_2_data_list(file_list)
-		# --------------------------------------------------
+		# =====================================================
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -97,32 +98,22 @@ class DataList(object):
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def file_list_2_data_list(self,
-				file_list,
-				normalize=None,
-				window=None,
-				fs=None,
-				mode="freqTime"):
+	def file_list_2_data_list(	self,
+								file_list,
+								normalize=None,
+								window=None,
+								fs=None,
+								mode="freqTime"):
 
 		print("file_list_2_data_list()")
+
 		# ==================================================
-		# -- > Empacotamento
-		#	data_list [index]{{info}{[t][x][f][H][H_db]}}
-		#		[index]					- index
-		#		{'info'	:info_dict, 
-		#		 'data'	:data_dict}		- type
-		#
-		#	data_dict
-		#	{
-		#		't'		: tempo		  
-		#		'x'		: amplitude pelo tempo 		  
-		#		'f'		: frequência 		  
-		#		'H'		: amplitude pela frequência 		 
-		#		'H_dB	: amplitude_dB pela frequência	
-		#	}
-		# ==================================================
+		#	data_list [index]{info, data}
+		#		'info'	: informações sobre o dado, 
+		#		'data'	: conteúdo do dado
 		data_list = []
-		# --------------------------------------------------
+		# ==================================================
+		
 		for file in file_list:
 			x, y, info_dict = self.read_tek_tds1012_csv(file)
 			data_array = np.zeros((len(x), 5), dtype=float)	
@@ -136,6 +127,14 @@ class DataList(object):
 			N = len(x)
 			w = blackman(N)
 
+			# ==================================================
+			#	data_dict{[t][x][f][H][H_db])
+			#		't'		: tempo				[np.array]		  
+			#		'x'		: amp / tempo 		[np.array] 		  
+			#		'f'		: freq				[np.array] 		  
+			#		'H'		: amp / freq		[np.array] 		 
+			#		'H_dB'	: amp_dB / freq		[np.array]
+			#	
 			data_dict = {
 				't' 		:np.linspace(0.0, N * Ts, N) * 1E6,
 				'x'			:y,
@@ -143,11 +142,13 @@ class DataList(object):
 				'H'			:fftpack.fft(y * w) ,
 				'H_dB'		:20*np.log10(abs(data_array[:, 3]))
 			}
+			# ==================================================
 			
 			data_list.append({
 				'info'		:info_dict, 
 				'data'		:data_dict
 			})
+
 		# --------------------------------------------------
 		print("len(data_list): ", len(data_list))
 		# ==================================================
@@ -155,13 +156,27 @@ class DataList(object):
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def plot_data_list(self, file_list):
-		print("plot_data_list()")
+	def normalize_data_list(self, 
+							file_list,
+							master=None):
+
+		print("normalize_data_list()")
+
+#===============================================================
+# **************************************************************
+class PlotDataList(DataList):
+	"""docstring for DataList"""
+	def __init__(self, file_list):
+		super().__init__(self, file_list)
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def normalize_data(self, file_list):
-		print("normalize_data_list()")
+	def plot_data_list(	self, 
+						file_list,
+						):
+
+		print("plot_data_list()")
+		fig, ax = plt.subplots(nrow, ncol)
 
 #===============================================================
 # **************************************************************				
@@ -174,7 +189,7 @@ filename_d = '../03.05/ALL0004/F0004CH1.CSV'
 
 file_list = [filename_a, filename_b, filename_a, filename_d]
 
-data_list_1 = DataList(file_list)
+data_list_1 = PlotDataList(file_list)
 
 # data_list_1.ab_plot(filename_a, filename_b, 'BNC', 'COAX', normalize=False)
 # data_list_1.ab_plot(filename_a, filename_b, 'COAX', 'Placa 1') 
