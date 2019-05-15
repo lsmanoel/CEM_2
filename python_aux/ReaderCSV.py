@@ -211,6 +211,9 @@ class PlotDataList(DataList):
 
 			for data in data_list: 
 				ax.plot(data['axes']['time']['t'], data['axes']['time']['x'])
+		
+			ax.set_xlabel('Tempo (us)')
+			ax.set_ylabel('Amplitude (V)')
 		# -------------------------------------------------
 		else:
 			if plot_mode == 'freq':
@@ -218,6 +221,12 @@ class PlotDataList(DataList):
 				for data in data_list:
 					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
 					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H'])
+
+				ax[0].set_xlabel('Tempo (us)')
+				ax[0].set_ylabel('Amplitude (V)')
+				ax[1].set_xlabel('Freq (MHz)')
+				ax[1].set_ylabel('Amplitude (linear)')
+				# ax[1].set_xlim([0, 125])
 			# -------------------------------------------------
 			elif plot_mode == 'freq_dB':
 				fig, ax = plt.subplots(2, 1)
@@ -225,6 +234,11 @@ class PlotDataList(DataList):
 					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
 					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H_dB'])
 
+				ax[0].set_xlabel('Tempo (us)')
+				ax[0].set_ylabel('Amplitude (V)')
+				ax[1].set_xlabel('Freq (MHz)')
+				ax[1].set_ylabel('Amplitude (dB)')
+				# ax[1].set_xlim([0, 125])
 		# ==================================================
 		plt.show()
 
