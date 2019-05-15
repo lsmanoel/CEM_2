@@ -107,6 +107,20 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     x_a, y_a, info_a = read_tek_tds1012_csv(file_a)
     x_b, y_b, info_b = read_tek_tds1012_csv(file_b)
 
+    def fft(y, Fs=1, N=None, norm=None):
+        if N is None:
+            N = len(y)
+        w = 1  # hann(N_a)
+        yf = abs(np.fft.rfft(w * y, N))
+        if norm is not None:
+            if norm is 0:
+                norm = max(yf)
+        else:
+            norm = 1
+        yf = 20 * np.log10(yf / norm)
+        xf = np.linspace(0.0, Fs / 2, len(yf))
+        return xf, yf, norm
+
     F_signal = 2E6
     T_signal = 1 / F_signal
 
@@ -117,27 +131,19 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
 
     y_a = y_a[:N_a]
     y_b = y_b[:N_b]
-
-    w_a = 1#hann(N_a)
-    w_b = 1#hann(N_b)
     x_a = np.linspace(0.0, N_a * Ts_a, N_a) * 1E6
     x_b = np.linspace(0.0, N_b * Ts_b, N_b) * 1E6
-    yf_a = abs(np.fft.rfft(y_a * w_a))
-    fft_norm = max(yf_a)
-    yf_a = 20 * np.log10(yf_a / fft_norm)
-    yf_b = abs(np.fft.rfft(y_b * w_b))
-    yf_b = 20 * np.log10(yf_b / fft_norm)
 
-    xf_a = np.linspace(0.0, 1/Ts_a, N_a//2 + 1) * 1E-6
-    xf_b = xf_a
-
-    norm = (np.max(y_a) - np.min(y_a)) / (np.max(y_b) - np.min(y_b))
+    norm_fft = 0
+    xf_a, yf_a, norm_fft = fft(y_a, 1E-6 / Ts_a, N_a, norm_fft)
+    xf_b, yf_b, norm_fft = fft(y_b, 1E-6 / Ts_b, N_b, norm_fft)
 
     fig, ax = plt.subplots(2, 1)
     ax[0].set_title(f'Comparação {name_a} e {name_b}')
     ax[0].plot(x_a, y_a)
     ax[0].plot(x_b, y_b)
     if normalize:
+        norm = (np.max(y_a) - np.min(y_a)) / (np.max(y_b) - np.min(y_b))
         ax[0].plot(x_b, y_b * norm + np.mean(y_a), color='grey', alpha=0.5)
     ax[0].set_xlabel('Tempo (us)')
     ax[0].set_ylabel('Amplitude (V)')
@@ -149,7 +155,7 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
     ax[1].plot(xf_b, yf_b)
     ax[1].set_xlabel('Freq (MHz)')
     ax[1].set_ylabel('Amplitude (dB)')
-    ax[1].set_xlim([0, 125]) # 125 MHz
+    # ax[1].set_xlim([0, 125])  # 125 MHz
     ax[1].legend([name_a, name_b])
 
     # Correlation:
