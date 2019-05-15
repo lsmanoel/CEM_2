@@ -27,10 +27,12 @@ class DataList:
 		#			'time'		: time_dict						
 		#			'freq'		: freq_dict					 	
 		#		
-		#			time_dict{'x'}  
+		#			time_dict{'t', 'x'}
+		#				't'			: [np.array]  
 		#				'x'			: [np.array]		 		    
 		#		
-		#			freq_dict{H', 'H_db'}	  	 		 		    
+		#			freq_dict{'f', 'H', 'H_db'}
+		#				'f'			: [np.array] 	  	 		 		    
 		#				'H'			: [np.array] 			 		 
 		#				'H_dB'		: [np.array] 				
 		#		
@@ -123,7 +125,7 @@ class DataList:
 		# ==================================================
 
 		for file in file_list:
-			x, y, info_dict = self.read_tek_tds1012_csv(file)
+			t, x, info_dict = self.read_tek_tds1012_csv(file)
 
 			if fs is None:
 				Ts = info_dict['Sample Interval']	
@@ -135,26 +137,28 @@ class DataList:
 			w = blackman(N)
 
 			# =================================================
-			#	axes_dict{'time', 'freq'}
-			#		'time'		: time_dict						
-			#		'freq'		: freq_dict	
-			axes_dict = {
-				'time' 		:np.linspace(0.0, N * Ts, N) * 1E6,
-				'freq'		:np.linspace(0.0, fs/2, N)
-			}
-			# -------------------------------------------------
 			#	time_dict{'x'}  
 			#		'x'			: [np.array]		 		    
 			time_dict = {
-				'x'			:y,
+				't'			:np.linspace(0.0, N * Ts, N) * 1E6,
+				'x'			:x,
 			}
 			# -------------------------------------------------
 			#	freq_dict{H', 'H_db'}	  	 		 		    
 			#		'H'			: [np.array] 			 		 
 			#		'H_dB'		: [np.array]	
 			freq_dict = {
-				'H'			:fftpack.fft(y * w) ,
-				'H_dB'		:20*np.log10(abs(fftpack.fft(y * w)))
+				'f'			:np.linspace(0.0, fs/2, N),
+				'H'			:fftpack.fft(x * w),
+				'H_dB'		:20*np.log10(abs(fftpack.fft(x * w)))
+			}
+			# -------------------------------------------------
+			#	axes_dict{'time', 'freq'}
+			#		'time'		: time_dict						
+			#		'freq'		: freq_dict	
+			axes_dict = {
+				'time' 		:time_dict,
+				'freq'		:freq_dict
 			}
 			# ==================================================
 			data_list.append({
@@ -197,22 +201,36 @@ class PlotDataList(DataList):
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	@staticmethod
 	def plot_data_list(	data_list,
-						nrow=None,
+						plot_mode=None,
 						ncol=None):
-
-		if 	 ncol is None 		and nrow is None:
-			ncol = 1
-			nrow = len(data_list[0]['axes'])
-
-		elif ncol is None 		and nrow is not None:
-			ncol = len(data_list[0]['axes'])//nrow + 1
-
-		elif ncol is not None 	and nrow is None:
-			nrow = len(data_list[0]['axes'])//ncol + 1
 
 		print("plot_data_list()")
 
-		fig, ax = plt.subplots(nrow, ncol)
+		# ==================================================
+		if plot_mode is None:
+			fig, ax = plt.subplots(1, 1)
+
+			ax.plot(data_list[0]['axes']['time']['t'], 
+					data_list[0]['axes']['time']['x'])
+
+			for data in data_list:
+				for data_array in data['axes']['time'].values():
+					ax.plot(data['axes']['time']['t'], 
+							data_array)
+		# -------------------------------------------------
+		elif plot_mode == 'freq':
+			pass
+		# 	ncol = 1
+		# 	nrow = 2
+		# 	fig, ax = plt.subplots(1, 2)
+		# -------------------------------------------------
+		elif plot_mode == 'freq_dB':
+			pass
+		# 	ncol = 1
+		# 	nrow = 3
+		# 	fig, ax = plt.subplots(1, 3)
+		# ==================================================
+
 		plt.show()
 
 #===============================================================
