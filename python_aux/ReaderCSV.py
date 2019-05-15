@@ -16,17 +16,24 @@ class DataList:
 		self._file_list = file_list
 
 		# ==================================================
-		# -- > Empacotamento
-		#	data_list [index]{info, data}
-		#		'info'	: informações sobre o dado, 
-		#		'data'	: conteúdo do dado
+		# -- > Estrutura data_list
 		#
-		#	data_dict{[t][x][f][H][H_db])
-		#		't'		: tempo				[np.array]		  
-		#		'x'		: amp / tempo 		[np.array] 		  
-		#		'f'		: freq				[np.array] 		  
-		#		'H'		: amp / freq		[np.array] 		 
-		#		'H_dB'	: amp_dB / freq		[np.array]
+		#	data_list [index]{'info', 'data'}
+		#		'info'	: info_dict 
+		#		'data'	: data_dict
+		#
+		#	data_dict{'abscissa', 'spindle'}
+		#		'abscissa' : abscissa_dict
+		#		'spindle'  : spindle_dict
+		#		
+		#	abscissa_dict{[t][f]}
+		#		't'		: [np.array]	tempo					
+		#		'f'		: [np.array]	freq				 	
+		#
+		#	data_dict{[x][H][H_db])	  
+		#		'x'		: [np.array] 	tempo 		 		    
+		#		'H'		: [np.array] 	freq		 		 
+		#		'H_dB'	: [np.array] 	freq		
 		#	
 		self._data_list = self.file_list_2_data_list(file_list)
 		# =====================================================
