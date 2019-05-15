@@ -107,10 +107,10 @@ class DataList(object):
 		print("file_list_2_data_list()")
 		# ==================================================
 		# -- > Empacotamento
-		#	data_list []{}
+		#	data_list [index]{{info}{[t][x][f][H][H_db]}}
 		#		[index]					- index
-		#		{'info':info_dict, 
-		#		 'data':data_dict}		- type
+		#		{'info'	:info_dict, 
+		#		 'data'	:data_dict}		- type
 		#
 		#	data_dict
 		#	{
