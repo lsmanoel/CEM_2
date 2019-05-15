@@ -10,9 +10,8 @@ from scipy.signal import blackman
 
 #===============================================================
 # **************************************************************
-class DataList(object):
+class DataList:
 	def __init__(self, file_list):
-		super(DataList, self).__init__()
 
 		self._file_list = file_list
 
@@ -162,21 +161,44 @@ class DataList(object):
 
 		print("normalize_data_list()")
 
+	@property
+	def data_list(self):
+		return self._data_list
+
+	@data_list.setter
+	def data_list(self, value):
+		self._data_list = value
+	
+
 #===============================================================
 # **************************************************************
 class PlotDataList(DataList):
 	"""docstring for DataList"""
 	def __init__(self, file_list):
-		super().__init__(self, file_list)
+		super().__init__(file_list)
+		self.plot_data_list(self.data_list)
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	def plot_data_list(	self, 
-						file_list,
-						):
+						data_list,
+						nrow=None,
+						ncol=None):
+
+		if 	 ncol is None 		and nrow is None:
+			ncol = 1
+			nrow = len(data_list[0]['data'])
+
+		elif ncol is None 		and nrow is not None:
+			ncol = len(data_list[0]['data'])//nrow + 1
+
+		elif ncol is not None 	and nrow is None:
+			nrow = len(data_list[0]['data'])//ncol + 1
 
 		print("plot_data_list()")
+
 		fig, ax = plt.subplots(nrow, ncol)
+		plt.show()
 
 #===============================================================
 # **************************************************************				
