@@ -10,6 +10,7 @@ from scipy.signal import blackman
 
 #===============================================================
 # **************************************************************
+# **************************************************************
 class DataList:
 	def __init__(self, file_list):
 
@@ -19,23 +20,21 @@ class DataList:
 		# -- > Estrutura data_list
 		#
 		#	data_list [index]{'info', 'data'}
-		#		'info'	: info_dict 
-		#		'data'	: data_dict
-		#
-		#	data_dict{'abscissa', 'spindle'}
-		#		'abscissa' : abscissa_dict
-		#		'spindle'  : spindle_dict
-		#		
-		#	abscissa_dict{[t][f]}
-		#		't'		: [np.array]	tempo					
-		#		'f'		: [np.array]	freq				 	
-		#
-		#	data_dict{[x][H][H_db])	  
-		#		'x'		: [np.array] 	tempo 		 		    
-		#		'H'		: [np.array] 	freq		 		 
-		#		'H_dB'	: [np.array] 	freq		
+		#		'info'		: info_dict 
+		#		'axes'		: axes_dict
 		#	
-		self._data_list = self.file_list_2_data_list(file_list)
+		#		axes_dict{'time', 'freq'}
+		#			'time'		: time_dict						
+		#			'freq'		: freq_dict					 	
+		#		
+		#			time_dict{'x'}  
+		#				'x'			: [np.array]		 		    
+		#		
+		#			freq_dict{H', 'H_db'}	  	 		 		    
+		#				'H'			: [np.array] 			 		 
+		#				'H_dB'		: [np.array] 				
+		#		
+		self._data_list = self.file2data_list(file_list)
 		# =====================================================
 
 	#===========================================================
@@ -104,25 +103,27 @@ class DataList:
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def file_list_2_data_list(	self,
-								file_list,
-								normalize=None,
-								window=None,
-								fs=None,
-								mode="freqTime"):
+	def file2data_list(	self,
+						file_list,
+						normalize=None,
+						window=None,
+						fs=None):
+
 
 		print("file_list_2_data_list()")
 
 		# ==================================================
-		#	data_list [index]{info, data}
-		#		'info'	: informações sobre o dado, 
-		#		'data'	: conteúdo do dado
+		# -- > Estrutura data_list
+		#	
+		# ==================================================
+		#	data_list [index]{'info', 'data'}
+		#		'info'		: info_dict 
+		#		'axes'		: axes_dict
 		data_list = []
 		# ==================================================
-		
+
 		for file in file_list:
 			x, y, info_dict = self.read_tek_tds1012_csv(file)
-			data_array = np.zeros((len(x), 5), dtype=float)	
 
 			if fs is None:
 				Ts = info_dict['Sample Interval']	
@@ -133,26 +134,32 @@ class DataList:
 			N = len(x)
 			w = blackman(N)
 
-			# ==================================================
-			#	data_dict{[t][x][f][H][H_db])
-			#		't'		: tempo				[np.array]		  
-			#		'x'		: amp / tempo 		[np.array] 		  
-			#		'f'		: freq				[np.array] 		  
-			#		'H'		: amp / freq		[np.array] 		 
-			#		'H_dB'	: amp_dB / freq		[np.array]
-			#	
-			data_dict = {
-				't' 		:np.linspace(0.0, N * Ts, N) * 1E6,
+			# =================================================
+			#	axes_dict{'time', 'freq'}
+			#		'time'		: time_dict						
+			#		'freq'		: freq_dict	
+			axes_dict = {
+				'time' 		:np.linspace(0.0, N * Ts, N) * 1E6,
+				'freq'		:np.linspace(0.0, fs/2, N)
+			}
+			# -------------------------------------------------
+			#	time_dict{'x'}  
+			#		'x'			: [np.array]		 		    
+			time_dict = {
 				'x'			:y,
-				'f'			:np.linspace(0.0, fs/2, N) ,
+			}
+			# -------------------------------------------------
+			#	freq_dict{H', 'H_db'}	  	 		 		    
+			#		'H'			: [np.array] 			 		 
+			#		'H_dB'		: [np.array]	
+			freq_dict = {
 				'H'			:fftpack.fft(y * w) ,
-				'H_dB'		:20*np.log10(abs(data_array[:, 3]))
+				'H_dB'		:20*np.log10(abs(fftpack.fft(y * w)))
 			}
 			# ==================================================
-			
 			data_list.append({
 				'info'		:info_dict, 
-				'data'		:data_dict
+				'axes'		:axes_dict
 			})
 
 		# --------------------------------------------------
@@ -163,7 +170,7 @@ class DataList:
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	def normalize_data_list(self, 
-							file_list,
+							data_list,
 							master=None):
 
 		print("normalize_data_list()")
@@ -179,6 +186,7 @@ class DataList:
 
 #===============================================================
 # **************************************************************
+# **************************************************************
 class PlotDataList(DataList):
 	"""docstring for DataList"""
 	def __init__(self, file_list):
@@ -187,20 +195,20 @@ class PlotDataList(DataList):
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def plot_data_list(	self, 
-						data_list,
+	@staticmethod
+	def plot_data_list(	data_list,
 						nrow=None,
 						ncol=None):
 
 		if 	 ncol is None 		and nrow is None:
 			ncol = 1
-			nrow = len(data_list[0]['data'])
+			nrow = len(data_list[0]['axes'])
 
 		elif ncol is None 		and nrow is not None:
-			ncol = len(data_list[0]['data'])//nrow + 1
+			ncol = len(data_list[0]['axes'])//nrow + 1
 
 		elif ncol is not None 	and nrow is None:
-			nrow = len(data_list[0]['data'])//ncol + 1
+			nrow = len(data_list[0]['axes'])//ncol + 1
 
 		print("plot_data_list()")
 
@@ -208,6 +216,7 @@ class PlotDataList(DataList):
 		plt.show()
 
 #===============================================================
+# **************************************************************
 # **************************************************************				
 print(">>> >>> >>> TestE <<< <<< <<<")
 
@@ -223,3 +232,5 @@ data_list_1 = PlotDataList(file_list)
 # data_list_1.ab_plot(filename_a, filename_b, 'BNC', 'COAX', normalize=False)
 # data_list_1.ab_plot(filename_a, filename_b, 'COAX', 'Placa 1') 
 # data_list_1.file_list_2_data_list(file_list) 
+
+print(">>> >>> >>> EndTe <<< <<< <<<")
