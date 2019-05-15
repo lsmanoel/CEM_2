@@ -148,7 +148,7 @@ class DataList:
 			#		'H'			: [np.array] 			 		 
 			#		'H_dB'		: [np.array]	
 			freq_dict = {
-				'f'			:np.linspace(0.0, fs/2, N),
+				'f'			:np.linspace(0.0, fs, N),
 				'H'			:fftpack.fft(x * w),
 				'H_dB'		:20*np.log10(abs(fftpack.fft(x * w)))
 			}
@@ -201,8 +201,7 @@ class PlotDataList(DataList):
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	@staticmethod
 	def plot_data_list(	data_list,
-						plot_mode=None,
-						ncol=None):
+						plot_mode='freq_dB'):
 
 		print("plot_data_list()")
 
@@ -210,27 +209,23 @@ class PlotDataList(DataList):
 		if plot_mode is None:
 			fig, ax = plt.subplots(1, 1)
 
-			ax.plot(data_list[0]['axes']['time']['t'], 
-					data_list[0]['axes']['time']['x'])
+			for data in data_list: 
+				ax.plot(data['axes']['time']['t'], data['axes']['time']['x'])
+		# -------------------------------------------------
+		else:
+			if plot_mode == 'freq':
+				fig, ax = plt.subplots(2, 1)
+				for data in data_list:
+					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
+					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H'])
+			# -------------------------------------------------
+			elif plot_mode == 'freq_dB':
+				fig, ax = plt.subplots(2, 1)
+				for data in data_list:
+					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
+					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H_dB'])
 
-			for data in data_list:
-				for data_array in data['axes']['time'].values():
-					ax.plot(data['axes']['time']['t'], 
-							data_array)
-		# -------------------------------------------------
-		elif plot_mode == 'freq':
-			pass
-		# 	ncol = 1
-		# 	nrow = 2
-		# 	fig, ax = plt.subplots(1, 2)
-		# -------------------------------------------------
-		elif plot_mode == 'freq_dB':
-			pass
-		# 	ncol = 1
-		# 	nrow = 3
-		# 	fig, ax = plt.subplots(1, 3)
 		# ==================================================
-
 		plt.show()
 
 #===============================================================
