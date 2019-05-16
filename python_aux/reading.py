@@ -219,17 +219,17 @@ def import_comparison_table(filename):
     experiments_list = []
     for observation in df.transpose().to_dict().values():
         file_list = []
-        info = {}
+        info_dict = {}
         for key, data in zip(observation.keys(), observation.values()):
             if key is 'A' or key is 'B' or key is 'C':
                 if data['File'] is not '':
                     file_list.append(data)
             else:
-                info.update({key: data})
+                info_dict.update({key: data})
 
         experiments_list.append({
+            'info_dict': info_dict,
             'file_list': file_list,
-            'info': info
         })
 
     return experiments_list
@@ -248,4 +248,6 @@ for i, experiment in enumerate(experiments_list):
     print_dict_utf8(experiment['file_list'])
     print('--------------------------------------------\n')
 
+
+print_dict_utf8(experiments_list)
 # end
