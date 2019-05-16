@@ -12,32 +12,47 @@ from scipy.signal import blackman
 # **************************************************************
 # **************************************************************
 class DataList:
-	def __init__(self, file_list):
+	def __init__(self, 
+				 file_list=None, 
+				 data_list=None, 
+				 fs=None):
 
-		self._file_list = file_list
+		self._fs = None
+		self._Ts = None
+		self._file_list = None
+		self._data_list = None
 
-		# ==================================================
-		# -- > Estrutura data_list
-		#
-		#	data_list [index]{'info', 'data'}
-		#		'info'		: info_dict 
-		#		'axes'		: axes_dict
-		#	
-		#		axes_dict{'time', 'freq'}
-		#			'time'		: time_dict						
-		#			'freq'		: freq_dict					 	
-		#		
-		#			time_dict{'t', 'x'}
-		#				't'			: [np.array]  
-		#				'x'			: [np.array]		 		    
-		#		
-		#			freq_dict{'f', 'H', 'H_db'}
-		#				'f'			: [np.array] 	  	 		 		    
-		#				'H'			: [np.array] 			 		 
-		#				'H_dB'		: [np.array] 				
-		#		
-		self._data_list = self.file2data_list(file_list)
-		# =====================================================
+		if fs is not None:
+			self._fs = fs
+			self._Ts = 1/fs
+
+		elif file_list is not None:
+			self._file_list = file_list
+			# ==================================================
+			# -- > Estrutura data_list
+			#
+			#	data_list [index]{'info', 'data'}
+			#		'info'		: info_dict 
+			#		'axes'		: axes_dict
+			#	
+			#		axes_dict{'time', 'freq'}
+			#			'time'		: time_dict						
+			#			'freq'		: freq_dict					 	
+			#		
+			#			time_dict{'t', 'x'}
+			#				't'			: [np.array]  
+			#				'x'			: [np.array]		 		    
+			#		
+			#			freq_dict{'f', 'H', 'H_db'}
+			#				'f'			: [np.array] 	  	 		 		    
+			#				'H'			: [np.array] 			 		 
+			#				'H_dB'		: [np.array] 				
+			#		
+			self._data_list = self.file2data_list(self._file_list)
+			# =====================================================
+
+		elif data_list is not None:
+			self._data_list = data_list
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -101,6 +116,7 @@ class DataList:
 	            'Firmware Version': firmware_version,
 	        }
 
+
 	    return np.array(raw_x), np.array(raw_y), info
 
 	#===========================================================
@@ -128,10 +144,12 @@ class DataList:
 			t, x, info_dict = self.read_tek_tds1012_csv(file)
 
 			if fs is None:
-				Ts = info_dict['Sample Interval']	
-				fs = 1/Ts
+				self._Ts = info_dict['Sample Interval']	
+				self._fs = 1/self._Ts
+
 			else:
-				Ts = 1/fs
+				self._fs = fs
+				self._Ts = 1/fs
 
 			N = len(x)
 			w = blackman(N)
@@ -140,7 +158,7 @@ class DataList:
 			#	time_dict{'x'}  
 			#		'x'			: [np.array]		 		    
 			time_dict = {
-				't'			:np.linspace(0.0, N * Ts, N) * 1E6,
+				't'			:np.linspace(0.0, N * self._Ts, N) * 1E6,
 				'x'			:x,
 			}
 			# -------------------------------------------------
@@ -148,7 +166,7 @@ class DataList:
 			#		'H'			: [np.array] 			 		 
 			#		'H_dB'		: [np.array]	
 			freq_dict = {
-				'f'			:np.linspace(0.0, fs, N),
+				'f'			:np.linspace(0.0, self._fs, N),
 				'H'			:fftpack.fft(x * w),
 				'H_dB'		:20*np.log10(abs(fftpack.fft(x * w)))
 			}
@@ -179,6 +197,15 @@ class DataList:
 
 		print("normalize_data_list()")
 
+
+	@property
+	def file_list(self):
+		return self._file_list
+
+	@file_list.setter
+	def file_list(self, value):
+		self._file_list = value
+
 	@property
 	def data_list(self):
 		return self._data_list
@@ -187,21 +214,44 @@ class DataList:
 	def data_list(self, value):
 		self._data_list = value
 	
+	@property
+	def fs(self):
+		return self._fs
+
+	@fs.setter
+	def fs(self, value):
+		self._fs = value
+		self._Ts = 1/value
+
+	@property
+	def Ts(self):
+		return self._fs
+
+	@Ts.setter
+	def Ts(self, value):
+		self._Ts = value
+		self._fs = 1//value
 
 #===============================================================
 # **************************************************************
 # **************************************************************
 class PlotDataList(DataList):
 	"""docstring for DataList"""
-	def __init__(self, file_list):
-		super().__init__(file_list)
-		self.plot_data_list(self.data_list)
+	def __init__(self, 
+				 file_list=None, 
+				 data_list=None, 
+				 fs=None):
+
+		super().__init__(file_list=file_list, 
+						 data_list=data_list, 
+						 fs=fs)
+
+		self.plot_data_list()
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	@staticmethod
-	def plot_data_list(	data_list,
-						plot_mode='freq_dB'):
+	def plot_data_list(self,
+					   plot_mode='freq_dB'):
 
 		print("plot_data_list()")
 
@@ -209,7 +259,7 @@ class PlotDataList(DataList):
 		if plot_mode is None:
 			fig, ax = plt.subplots(1, 1)
 
-			for data in data_list: 
+			for data in self.data_list: 
 				ax.plot(data['axes']['time']['t'], data['axes']['time']['x'])
 		
 			ax.set_xlabel('Tempo (us)')
@@ -218,7 +268,7 @@ class PlotDataList(DataList):
 		else:
 			if plot_mode == 'freq':
 				fig, ax = plt.subplots(2, 1)
-				for data in data_list:
+				for data in self.data_list:
 					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
 					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H'])
 
@@ -226,11 +276,11 @@ class PlotDataList(DataList):
 				ax[0].set_ylabel('Amplitude (V)')
 				ax[1].set_xlabel('Freq (MHz)')
 				ax[1].set_ylabel('Amplitude (linear)')
-				# ax[1].set_xlim([0, 125])
+				ax[1].set_xlim([0, 125])
 			# -------------------------------------------------
 			elif plot_mode == 'freq_dB':
 				fig, ax = plt.subplots(2, 1)
-				for data in data_list:
+				for data in self.data_list:
 					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
 					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H_dB'])
 
@@ -238,7 +288,7 @@ class PlotDataList(DataList):
 				ax[0].set_ylabel('Amplitude (V)')
 				ax[1].set_xlabel('Freq (MHz)')
 				ax[1].set_ylabel('Amplitude (dB)')
-				# ax[1].set_xlim([0, 125])
+				ax[1].set_xlim([0, self.fs//2])
 		# ==================================================
 		plt.show()
 
