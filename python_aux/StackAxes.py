@@ -168,7 +168,7 @@ class StackAxes:
 
             freq_dict = {
                 'plot': plot_dict,
-                'f': np.linspace(0, self._fs / 2, len(xfft)),
+                'f': np.linspace(0, self._fs / 2, len(xfft)) * 1E-6,
                 'H': xfft,
                 'H_dB': 20 * np.log10(abs(xfft))
             }
@@ -282,7 +282,6 @@ class PlotAxesList(StackAxes):
                 ax[0].set_ylabel('Amplitude (V)')
                 ax[1].set_xlabel('Freq (MHz)')
                 ax[1].set_ylabel('Amplitude (linear)')
-                # ax[1].set_xlim([0, 125])
             # -------------------------------------------------
             elif plot_mode == 'freq_dB':
                 fig, ax = plt.subplots(2, 1, figsize=(6, 8))
@@ -296,7 +295,6 @@ class PlotAxesList(StackAxes):
                 ax[0].set_ylabel('Amplitude (V)')
                 ax[1].set_xlabel('Freq (MHz)')
                 ax[1].set_ylabel('Amplitude (dB)')
-                # ax[1].set_xlim([0, self.fs // 2])
         # ==================================================
         plt.show()
 
