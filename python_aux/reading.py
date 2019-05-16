@@ -221,6 +221,8 @@ def import_comparison_table(filename):
         for key, data in zip(observation.keys(), observation.values()):
             if key is 'A' or key is 'B' or key is 'C':
                 if data['File'] is not '':
+                    n = ''.join(filter(str.isdigit, data['File']))
+                    data['File'] = f'../13.05/ALL{n}/F{n}CH1'
                     file_list.append(data)
             else:
                 info_dict.update({key: data})
