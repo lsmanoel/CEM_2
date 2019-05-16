@@ -10,7 +10,7 @@ from scipy.signal import blackman
 #===============================================================
 # **************************************************************
 # **************************************************************
-class DataList:
+class StackAxes:
 	def __init__(self,
 				 file_list=None, 
 				 data_list=None, 
@@ -19,7 +19,7 @@ class DataList:
 		self._fs = None
 		self._Ts = None
 		self._file_list = None
-		self._data_list = None
+		self._axes_list = None
 
 		if fs is not None:
 			self._fs = fs
@@ -30,7 +30,7 @@ class DataList:
 			# ==================================================
 			# -- > Estrutura data_list
 			#
-			#	stack_axes_list [index]{}
+			#	axes_list [index]{}
 			#		'info'		: info_dict 
 			#		'axes'		: axes_dict
 			#		
@@ -73,11 +73,11 @@ class DataList:
 			#						'xlabel'		: string
 			#						'ylabel'		: string
 			#					
-			self._data_list = self.file2data_list(self._file_list)
+			self._axes_list = self.file2data_list(self._file_list)
 			# =====================================================
 
-		elif data_list is not None:
-			self._data_list = data_list
+		elif axes_list is not None:
+			self._axes_list = axes_list
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -162,8 +162,7 @@ class DataList:
 		#	data_list [index]{'info', 'data'}
 		#		'info'		: info_dict 
 		#		'axes'		: axes_dict
-		data_list = []
-		# ==================================================
+		axes_list = []
 
 		for file in file_list:
 			t, x, info_dict = self.read_tek_tds1012_csv(file)
@@ -179,40 +178,34 @@ class DataList:
 			N = len(x)
 			w = blackman(N)
 
-			# =================================================
-			#	time_dict{'x'}  
-			#		'x'			: [np.array]		 		    
+			# --------------------------------------------------
 			time_dict = {
 				't'			:np.linspace(0.0, N * self._Ts, N) * 1E6,
 				'x'			:x,
 			}
-			# -------------------------------------------------
-			#	freq_dict{H', 'H_db'}	  	 		 		    
-			#		'H'			: [np.array] 			 		 
-			#		'H_dB'		: [np.array]	
+
 			freq_dict = {
 				'f'			:np.linspace(0.0, self._fs, N),
 				'H'			:fftpack.fft(x * w),
 				'H_dB'		:20*np.log10(abs(fftpack.fft(x * w)))
 			}
-			# -------------------------------------------------
-			#	axes_dict{'time', 'freq'}
-			#		'time'		: time_dict						
-			#		'freq'		: freq_dict	
+
 			axes_dict = {
 				'time' 		:time_dict,
 				'freq'		:freq_dict
 			}
-			# ==================================================
-			data_list.append({
+			
+			# --------------------------------------------------
+			axes_list.append({
 				'info'		:info_dict, 
 				'axes'		:axes_dict
 			})
+			# ==================================================
 
 		# --------------------------------------------------
-		print("len(data_list): ", len(data_list))
+		print("len(axes_list): ", len(axes_list))
 		# ==================================================
-		return data_list	
+		return axes_list	
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
