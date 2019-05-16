@@ -13,7 +13,7 @@ from scipy.signal import blackman
 class StackAxes:
 	def __init__(self,
 				 file_list=None, 
-				 data_list=None, 
+				 axes_list=None, 
 				 fs=None):
 
 		self._fs = None
@@ -27,54 +27,7 @@ class StackAxes:
 
 		elif file_list is not None:
 			self._file_list = file_list
-			# ==================================================
-			# -- > Estrutura data_list
-			#
-			#	axes_list [index]{}
-			#		'info'		: info_dict 
-			#		'axes'		: axes_dict
-			#		
-			#		info_dict{...}
-	        #    		'Record Length'		: record_length
-	        #    		'Sample Interval'	: sample_interval
-	        #    		'Source'			: source
-	        #    		'Vertical Units'	: vertical_units
-	        #    		'Vertical Scale'	: vertical_scale
-	        #    		'Vertical Offset'	: vertical_offset
-	        #    		'Horizontal Units'	: horizontal_units
-	        #    		'Horizontal Scale'	: horizontal_scale
-	        #    		'Pt Fmt'			: pt_fmt
-	        #    		'Yzero'				: yzero
-	        #    		'Probe Atten'		: probe_atten
-	        #    		'Model Number'		: model_number
-	        #    		'Serial Number'		: serial_number
-	        #    		'Firmware Version'	: firmware_version
-			#
-			#		axes_dict{}
-			#			'time'		: time_dict						
-			#			'freq'		: freq_dict					 	
-			#			
-			#			time_dict{}
-			#				't'			: data_dict  
-			#				'x'			: data_dict 
-			#
-			#			freq_dict{}
-			#				'f'			: data_dict 	  	 		 		    
-			#				'H'			: data_dict 			 		 
-			#				'H_dB'		: data_dict 				
-			#		
-			#				data_dict{}
-			#					'array'			: [np.array] 
-			#					'config_plot'	: config_plot_dict
-			#					
-			#					config_plot_dict{}
-			#						'legend'		: string
-			#						'title'			: string
-			#						'xlabel'		: string
-			#						'ylabel'		: string
-			#					
-			self._axes_list = self.file2data_list(self._file_list)
-			# =====================================================
+			self._axes_list = self.file2axes_list(self._file_list)
 
 		elif axes_list is not None:
 			self._axes_list = axes_list
@@ -146,22 +99,15 @@ class StackAxes:
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def file2data_list(	self,
+	def file2axes_list(	self,
 						file_list,
 						normalize=None,
 						window=None,
 						fs=None):
 
 
-		print("file_list_2_data_list()")
+		print("file2axes_list()")
 
-		# ==================================================
-		# -- > Estrutura data_list
-		#	
-		# ==================================================
-		#	data_list [index]{'info', 'data'}
-		#		'info'		: info_dict 
-		#		'axes'		: axes_dict
 		axes_list = []
 
 		for file in file_list:
@@ -179,28 +125,39 @@ class StackAxes:
 			w = blackman(N)
 
 			# --------------------------------------------------
+			
+
+			plot_dict = {
+				'legend' : None,
+				'title' : None,
+				'xlabel' : None,
+				'ylabel' : None
+			}
+
+
 			time_dict = {
-				't'			:np.linspace(0.0, N * self._Ts, N) * 1E6,
-				'x'			:x,
+				'plot' :plot_dict,
+				't'	:np.linspace(0.0, N * self._Ts, N) * 1E6,
+				'x' :x,
 			}
 
 			freq_dict = {
-				'f'			:np.linspace(0.0, self._fs, N),
-				'H'			:fftpack.fft(x * w),
-				'H_dB'		:20*np.log10(abs(fftpack.fft(x * w)))
+				'plot' :plot_dict,
+				'f' :np.linspace(0.0, self._fs, N),
+				'H' :fftpack.fft(x * w),
+				'H_dB' :20*np.log10(abs(fftpack.fft(x * w)))
 			}
 
 			axes_dict = {
-				'time' 		:time_dict,
-				'freq'		:freq_dict
+				'time' :time_dict,
+				'freq' :freq_dict
 			}
-			
+
 			# --------------------------------------------------
 			axes_list.append({
-				'info'		:info_dict, 
-				'axes'		:axes_dict
+				'info' :info_dict, 
+				'axes' :axes_dict
 			})
-			# ==================================================
 
 		# --------------------------------------------------
 		print("len(axes_list): ", len(axes_list))
@@ -209,11 +166,11 @@ class StackAxes:
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def normalize_data_list(self, 
-							data_list,
+	def normalize_axes_list(self, 
+							axes_list,
 							master=None):
 
-		print("normalize_data_list()")
+		print("normalize_axes_list()")
 
 
 	@property
@@ -225,12 +182,12 @@ class StackAxes:
 		self._file_list = value
 
 	@property
-	def data_list(self):
-		return self._data_list
+	def axes_list(self):
+		return self._axes_list
 
-	@data_list.setter
-	def data_list(self, value):
-		self._data_list = value
+	@axes_list.setter
+	def axes_list(self, value):
+		self._axes_list = value
 	
 	@property
 	def fs(self):
@@ -253,32 +210,31 @@ class StackAxes:
 #===============================================================
 # **************************************************************
 # **************************************************************
-class PlotDataList(DataList):
-	"""docstring for DataList"""
+class PlotAxesList(StackAxes):
 	def __init__(self, 
 				 file_list=None, 
-				 data_list=None, 
+				 axes_list=None, 
 				 fs=None):
 
 		super().__init__(file_list=file_list, 
-						 data_list=data_list, 
+						 axes_list=axes_list, 
 						 fs=fs)
 
-		self.plot_data_list()
+		self.plot_axes_list()
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def plot_data_list(self,
+	def plot_axes_list(self,
 					   plot_mode='freq_dB'):
 
-		print("plot_data_list()")
+		print("plot_axes_list()")
 
 		# ==================================================
 		if plot_mode is None:
 			fig, ax = plt.subplots(1, 1, figsize=(6,4))
 
-			for data in self.data_list: 
-				ax.plot(data['axes']['time']['t'], data['axes']['time']['x'])
+			for axes in self.axes_list: 
+				ax.plot(axes['axes']['time']['t'], axes['axes']['time']['x'])
 		
 			ax.set_xlabel('Tempo (us)')
 			ax.set_ylabel('Amplitude (V)')
@@ -287,9 +243,9 @@ class PlotDataList(DataList):
 			if plot_mode == 'freq':
 				fig, ax = plt.subplots(2, 1, figsize=(6,8))
 
-				for data in self.data_list:
-					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
-					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H'])
+				for axes in self.axes_list:
+					ax[0].plot(axes['axes']['time']['t'], axes['axes']['time']['x'])
+					ax[1].plot(axes['axes']['freq']['f'], axes['axes']['freq']['H'])
 
 				ax[0].set_xlabel('Tempo (us)')
 				ax[0].set_ylabel('Amplitude (V)')
@@ -299,9 +255,9 @@ class PlotDataList(DataList):
 			# -------------------------------------------------
 			elif plot_mode == 'freq_dB':
 				fig, ax = plt.subplots(2, 1, figsize=(6,8))
-				for data in self.data_list:
-					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
-					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H_dB'])
+				for axes in self.axes_list:
+					ax[0].plot(axes['axes']['time']['t'], axes['axes']['time']['x'])
+					ax[1].plot(axes['axes']['freq']['f'], axes['axes']['freq']['H_dB'])
 
 				ax[0].set_xlabel('Tempo (us)')
 				ax[0].set_ylabel('Amplitude (V)')
@@ -323,10 +279,6 @@ filename_d = '../13.05/ALL0003/F0003CH1.CSV'
 
 file_list = [filename_a, filename_b, filename_c, filename_d]
 
-data_list_1 = PlotDataList(file_list)
-
-# data_list_1.ab_plot(filename_a, filename_b, 'BNC', 'COAX', normalize=False)
-# data_list_1.ab_plot(filename_a, filename_b, 'COAX', 'Placa 1') 
-# data_list_1.file_list_2_data_list(file_list) 
+axes_list_1 = PlotAxesList(file_list)
 
 print(">>> >>> >>> EndTe <<< <<< <<<")
