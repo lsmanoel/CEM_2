@@ -6,7 +6,6 @@ import scipy as sp
 from scipy import fftpack
 from scipy.signal import blackman
 #from scipy.signal import hann
-#from __future__ import fstrings
 
 #===============================================================
 # **************************************************************
