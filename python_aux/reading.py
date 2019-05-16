@@ -222,7 +222,7 @@ def import_comparison_table(filename):
             if key is 'A' or key is 'B' or key is 'C':
                 if data['File'] is not '':
                     n = ''.join(filter(str.isdigit, data['File']))
-                    data['File'] = f'../13.05/ALL{n}/F{n}CH1'
+                    data['File'] = f'../13.05/ALL{n}/F{n}CH1.csv'
                     file_list.append(data)
             else:
                 info_dict.update({key: data})
