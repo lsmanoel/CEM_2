@@ -180,9 +180,9 @@ def ab_plot(file_a, file_b, name_a='A', name_b='B', normalize=True):
 
 # A/B examples:
 
-filename_a = '../13.05/ALL0000/F0000CH1.CSV'
-filename_b = '../13.05/ALL0001/F0001CH1.CSV'
-ab_plot(filename_a, filename_b, 'BNC', 'COAX')
+# filename_a = '../13.05/ALL0000/F0000CH1.CSV'
+# filename_b = '../13.05/ALL0001/F0001CH1.CSV'
+# ab_plot(filename_a, filename_b, 'BNC', 'COAX')
 '''
 filename_a = '../13.05/ALL0000/F0000CH1.CSV'
 filename_b = '../13.05/ALL0002/F0002CH1.CSV'
@@ -215,7 +215,23 @@ def import_comparison_table(filename):
     combineIntoDict('B')
     combineIntoDict('C')
 
-    return df.transpose().to_dict()
+    experiments_list = []
+    for observation in df.transpose().to_dict().values():
+        info = []
+        data_list = []
+        for key, data in zip(observation.keys(), observation.values()):
+            print_dict_utf8(data)
+            if key is 'A' or key is 'B' or key is 'C':
+                data_list.append(data)
+            else:
+                info.append(data)
+
+        experiments_list.append({
+            'data_list': data_list,
+            'info': info
+        })
+
+    return experiments_list
 
 
 # Comparison table example:
