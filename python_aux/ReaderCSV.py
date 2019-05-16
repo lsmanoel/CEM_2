@@ -34,12 +34,12 @@ class StackAxes:
 
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	def read_tek_tds1012_csv(self, filename):
+	def read_tek_tds1012_csv(self, file_name):
 	    raw_x = []
 	    raw_y = []
 
-	    with open(filename, 'r') as csvfile:
-	        c = csv.reader(csvfile)
+	    with open(file_name, 'r') as csv_file:
+	        c = csv.reader(csv_file)
 
 	        in_header = True
 	        for row in c:
@@ -92,8 +92,8 @@ class StackAxes:
 	            'Model Number': model_number,
 	            'Serial Number': serial_number,
 	            'Firmware Version': firmware_version,
+	            'File Name' : file_name
 	        }
-
 
 	    return np.array(raw_x), np.array(raw_y), info
 
@@ -125,8 +125,6 @@ class StackAxes:
 			w = blackman(N)
 
 			# --------------------------------------------------
-			
-
 			plot_dict = {
 				'legend' : None,
 				'title' : None,
@@ -225,7 +223,7 @@ class PlotAxesList(StackAxes):
 	#===========================================================
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	def plot_axes_list(self,
-					   plot_mode='freq_dB'):
+					   plot_mode=None):
 
 		print("plot_axes_list()")
 
@@ -233,9 +231,12 @@ class PlotAxesList(StackAxes):
 		if plot_mode is None:
 			fig, ax = plt.subplots(1, 1, figsize=(6,4))
 
-			for axes in self.axes_list: 
+			axes_name = []
+			for i, axes in enumerate(self.axes_list): 
 				ax.plot(axes['axes']['time']['t'], axes['axes']['time']['x'])
-		
+				axes_name.append(axes['info']['File Name'])
+
+			ax.legend(axes_name)
 			ax.set_xlabel('Tempo (us)')
 			ax.set_ylabel('Amplitude (V)')
 		# -------------------------------------------------
