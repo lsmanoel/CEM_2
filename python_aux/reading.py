@@ -200,7 +200,6 @@ def print_dict_utf8(dictionary):
 
 def import_comparison_table(filename):
     df = pd.read_csv(filename, encoding='UTF-8')
-    # df.dropna(inplace=True)
     df.replace(np.nan, '', regex=True, inplace=True)
 
     def combineIntoDict(name):
@@ -212,9 +211,8 @@ def import_comparison_table(filename):
         }, axis=1)
         df.drop(cols, axis=1, inplace=True)
 
-    combineIntoDict('A')
-    combineIntoDict('B')
-    combineIntoDict('C')
+    for char in ['A', 'B', 'C']:
+        combineIntoDict(char)
 
     experiments_list = []
     for observation in df.transpose().to_dict().values():
@@ -241,13 +239,12 @@ csvtable = '../CEM - 03.05 - Comparison.csv'
 experiments_list = import_comparison_table(csvtable)
 
 for i, experiment in enumerate(experiments_list):
-    print(f'Experiment n°{i+1}:')
-    print(f"Descrição: {experiment['info']['Description']}")
-    print(f"Observação:' {experiment['info']['Observation']}")
+    print(f'Experimento n°{i+1}:')
+    print(f"Título: {experiment['info_dict']['Title']}")
+    print(f"Descrição: {experiment['info_dict']['Description']}")
+    print(f"Observação:' {experiment['info_dict']['Observation']}")
     print(f'Lista de Arquivos do experimento:')
     print_dict_utf8(experiment['file_list'])
     print('--------------------------------------------\n')
 
-
-print_dict_utf8(experiments_list)
 # end
