@@ -222,7 +222,7 @@ def import_comparison_table(filename):
             if key is 'A' or key is 'B' or key is 'C':
                 if data['File'] is not '':
                     n = ''.join(filter(str.isdigit, data['File']))
-                    data['File'] = f'../13.05/ALL{n}/F{n}CH1.csv'
+                    data['File'] = f'../13.05/ALL{n}/F{n}CH1.CSV'
                     file_list.append(data)
             else:
                 info_dict.update({key: data})
@@ -249,4 +249,10 @@ for i, experiment in enumerate(experiments_list):
     print_dict_utf8(experiment['file_list'])
     print('--------------------------------------------\n')
 
+# Example of usage:
+
+filename_a = experiments_list[1]['file_list'][0]['File']
+filename_b = experiments_list[1]['file_list'][1]['File']
+
+ab_plot(filename_a, filename_b, 'BNC', 'COAX')
 # end
