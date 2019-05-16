@@ -11,7 +11,7 @@ from scipy.signal import blackman
 # **************************************************************
 # **************************************************************
 class DataList:
-	def __init__(self, 
+	def __init__(self,
 				 file_list=None, 
 				 data_list=None, 
 				 fs=None):
@@ -256,7 +256,7 @@ class PlotDataList(DataList):
 
 		# ==================================================
 		if plot_mode is None:
-			fig, ax = plt.subplots(1, 1)
+			fig, ax = plt.subplots(1, 1, figsize=(6,4))
 
 			for data in self.data_list: 
 				ax.plot(data['axes']['time']['t'], data['axes']['time']['x'])
@@ -266,7 +266,8 @@ class PlotDataList(DataList):
 		# -------------------------------------------------
 		else:
 			if plot_mode == 'freq':
-				fig, ax = plt.subplots(2, 1)
+				fig, ax = plt.subplots(2, 1, figsize=(6,8))
+
 				for data in self.data_list:
 					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
 					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H'])
@@ -278,7 +279,7 @@ class PlotDataList(DataList):
 				ax[1].set_xlim([0, 125])
 			# -------------------------------------------------
 			elif plot_mode == 'freq_dB':
-				fig, ax = plt.subplots(2, 1)
+				fig, ax = plt.subplots(2, 1, figsize=(6,8))
 				for data in self.data_list:
 					ax[0].plot(data['axes']['time']['t'], data['axes']['time']['x'])
 					ax[1].plot(data['axes']['freq']['f'], data['axes']['freq']['H_dB'])
@@ -296,12 +297,12 @@ class PlotDataList(DataList):
 # **************************************************************				
 print(">>> >>> >>> TestE <<< <<< <<<")
 
-filename_a = '../03.05/ALL0000/F0000CH1.CSV'
-filename_b = '../03.05/ALL0001/F0001CH1.CSV'
-filename_c = '../03.05/ALL0000/F0002CH1.CSV'
-filename_d = '../03.05/ALL0004/F0004CH1.CSV'
+filename_a = '../13.05/ALL0000/F0000CH1.CSV'
+filename_b = '../13.05/ALL0001/F0001CH1.CSV'
+filename_c = '../13.05/ALL0002/F0002CH1.CSV'
+filename_d = '../13.05/ALL0003/F0003CH1.CSV'
 
-file_list = [filename_a, filename_b, filename_a, filename_d]
+file_list = [filename_a, filename_b, filename_c, filename_d]
 
 data_list_1 = PlotDataList(file_list)
 
