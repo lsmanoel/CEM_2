@@ -200,14 +200,15 @@ def print_dict_utf8(dictionary):
 
 def import_comparison_table(filename):
     df = pd.read_csv(filename, encoding='UTF-8')
+    # df.dropna(inplace=True)
     df.replace(np.nan, '', regex=True, inplace=True)
 
     def combineIntoDict(name):
-        cols = [f'Placa {name}', f'Legenda {name}', f'Arquivo {name}']
+        cols = [f'Board {name}', f'Legend {name}', f'File {name}']
         df[name] = df.apply(lambda row: {
-            'Placa': row[cols[0]],
-            'Legenda': row[cols[1]],
-            'Arquivo': row[cols[2]],
+            'Board': row[cols[0]],
+            'Legend': row[cols[1]],
+            'File': row[cols[2]],
         }, axis=1)
         df.drop(cols, axis=1, inplace=True)
 
@@ -217,17 +218,17 @@ def import_comparison_table(filename):
 
     experiments_list = []
     for observation in df.transpose().to_dict().values():
-        info = []
-        data_list = []
+        file_list = []
+        info = {}
         for key, data in zip(observation.keys(), observation.values()):
-            print_dict_utf8(data)
             if key is 'A' or key is 'B' or key is 'C':
-                data_list.append(data)
+                if data['File'] is not '':
+                    file_list.append(data)
             else:
-                info.append(data)
+                info.update({key: data})
 
         experiments_list.append({
-            'data_list': data_list,
+            'file_list': file_list,
             'info': info
         })
 
@@ -235,11 +236,16 @@ def import_comparison_table(filename):
 
 
 # Comparison table example:
-csvtable = '../CEM - 03.05 - Comparações.csv'
+csvtable = '../CEM - 03.05 - Comparison.csv'
 
-data = import_comparison_table(csvtable)
+experiments_list = import_comparison_table(csvtable)
 
-print_dict_utf8(data)
-
+for i, experiment in enumerate(experiments_list):
+    print(f'Experiment n°{i+1}:')
+    print(f"Descrição: {experiment['info']['Description']}")
+    print(f"Observação:' {experiment['info']['Observation']}")
+    print(f'Lista de Arquivos do experimento:')
+    print_dict_utf8(experiment['file_list'])
+    print('--------------------------------------------\n')
 
 # end
