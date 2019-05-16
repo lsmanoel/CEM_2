@@ -1,0 +1,18 @@
+Category,Observation,Description,Board A,File A,Legend A,Board B,File B,Legend B,Board C,File C,Legend C
+Geometria,Acoplamento capacitivo,distância entre trilhas coplanares e paralelas em face simples,Board 2,ALL0002,Legend Board 2,Board 1,ALL0001,Legend Board 1,,,
+Geometria,Acoplamento capacitivo,comprimento de trilhas coplanares e paralelas em face simples,Board 2,ALL0002,Legend Board 2,Board 3,ALL0003,Legend Board 3,,,
+Geometria,Acoplamento capacitivo,"distância entre trilhas coplanares e paralelas em face dupla, plano de cobre desconectado",Board 6,ALL0011,plano de cobre desconectado,Board 5,ALL0008,plano de cobre conectado na referência,,,
+Geometria,Acoplamento capacitivo,"comprimento de trilhas coplanares e paralelas em face dupla, plano de cobre desconectado",Board 6,ALL0011,plano de cobre desconectado,Board 7,ALL0016,plano de cobre conectado na referência,,,
+Geometria,Acoplamento capacitivo,"distância entre trilhas coplanares e paralelas em face dupla, plano de cobre conectado na referência",Board 6,ALL0012,plano de cobre desconectado,Board 5,ALL0009,plano de cobre conectado na referência,,,
+Geometria,Acoplamento capacitivo,"comprimento de trilhas coplanares e paralelas em face dupla, plano de cobre conectado na referência",Board 6,ALL0012,plano de cobre desconectado,Board 7,ALL0017,plano de cobre conectado na referência,,,
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão do plano de cobre à referência",Board 1,ALL0001,sem plano de cobre,Board 5,ALL0008,plano de cobre desconectado,Board 5,ALL0010,plano de cobre conectado na referência
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão do plano de cobre à referência",Board 2,ALL0002,sem plano de cobre,Board 6,ALL0011,plano de cobre desconectado,Board 6,ALL0012,plano de cobre conectado na referência
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão do plano de cobre à referência",Board 3,ALL0003,sem plano de cobre,Board 7,ALL0016,plano de cobre desconectado,Board 7,ALL0017,plano de cobre conectado na referência
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão do plano de cobre à referência",Board 4,ALL0004,,Board 8,ALL0018,,Board 8,,
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão do plano de cobre à referência",Board 4,ALL0005,,Board 8,ALL0019,,Board 8,,
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão do plano de cobre à referência",Board 4,ALL0006,,Board 8,ALL0022,,Board 8,,
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão do plano de cobre à referência",Board 4,ALL0007,,Board 8,ALL0023,,Board 8,,
+,,,,,,,,,,,
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão de uma terceira trilha coplanar e paralela de cobre à referência em face simples",Board 2,ALL0002,,Board 4,,,Board 4,,
+Referenciamento,Acoplamento capacitivo,"existência, conexão e desconexão de uma terceira trilha coplanar e paralela de cobre à referência em face dupla",Board 6,,,Board 8,,,Board 8,,
+Não idealidades,Capacitância e Indutância próprias,,Board 9,,,,,,,,

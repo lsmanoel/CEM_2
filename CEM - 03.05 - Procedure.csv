@@ -1,0 +1,11 @@
+Procedimentos dos Ensaios
+Realizar conexões da Board e dos terminais BNC
+Verificar sinal no osciloscópio
+Ajustar a amplitude no osciloscópio para utilizar melhor os 8 bits
+Aplicar a média para 128 amostras para remover o ruído aleatório
+Ajustar o trigger para que o trigger dispare em 2MHz
+Aguardar a estabilização da média
+Salvar forma de onda
+Tirar uma foto da montagem
+Remover a média
+Desconectar a Board
