@@ -18,8 +18,8 @@ info_dict = {
 }
 
 file_list[file_index] = {
-    "Board": "Board Name",
-    "File": "../full/path/of/file.csv",
-    "Legend": "Legend of curve of file_index for this experiment"
+    'Board': 'Board Name',
+    'File Name': '../full/path/of/file.csv',
+    'Legend': 'Legend of curve of file_index for this experiment'
 }
 ```

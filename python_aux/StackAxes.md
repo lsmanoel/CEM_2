@@ -22,6 +22,8 @@ axes_list [axes_index]{
 		'Serial Number': serial_number,
 		'Firmware Version': firmware_version,
 		'File Name' : file_name
+		'Board': board_name
+		'Legend': axes_legend
 	}
 
 	axes_dict{

@@ -4,6 +4,9 @@ import numpy as np
 
 # Plots configuration
 # list of styles:
+
+# plt.style.use('dark_background')
+
 #  https://matplotlib.org/gallery/style_sheets/style_sheets_reference.html
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.serif'] = 'Ubuntu'
@@ -19,13 +22,12 @@ plt.rcParams['figure.figsize'] = 10, 15
 # To look as crispy as osciloscope images:
 plt.rcParams['lines.linewidth'] = 0.01
 plt.rcParams['lines.antialiased'] = False
-# plt.rcParams['axes.facecolor'] = 'black'
+#plt.rcParams['axes.facecolor'] = 'black'
+
 
 # ===============================================================
 # **************************************************************
 # **************************************************************
-
-
 class StackAxes:
     def __init__(self,
                  file_list=None,
@@ -108,7 +110,9 @@ class StackAxes:
                 'Model Number': model_number,
                 'Serial Number': serial_number,
                 'Firmware Version': firmware_version,
-                'File Name': file_name
+                'File Name': None,
+                'Board': None,
+                'Legend': None,
             }
 
         return np.array(raw_x), np.array(raw_y), info
@@ -130,7 +134,11 @@ class StackAxes:
             w = 1
 
         for file in file_list:
-            t, x, info_dict = self.read_tek_tds1012_csv(file)
+            t, x, info_dict = self.read_tek_tds1012_csv(file['File Name'])
+            
+            info_dict['Board'] = file['Board']
+            info_dict['File Name'] = file['File Name']
+            info_dict['Legend'] = file['Legend']
 
             if fs is None:
                 self._Ts = info_dict['Sample Interval']
@@ -153,21 +161,12 @@ class StackAxes:
             xfft = np.fft.rfft(x * w, N)
 
             # --------------------------------------------------
-            plot_dict = {
-                'legend': None,
-                'title': None,
-                'xlabel': None,
-                'ylabel': None
-            }
-
             time_dict = {
-                'plot': plot_dict,
                 't'	: np.linspace(0.0, N * self._Ts, N) * 1E6,
                 'x': x,
             }
 
             freq_dict = {
-                'plot': plot_dict,
                 'f': np.linspace(0, self._fs / 2, len(xfft)) * 1E-6,
                 'H': xfft,
                 'H_dB': 20 * np.log10(abs(xfft))
@@ -231,11 +230,10 @@ class StackAxes:
         self._Ts = value
         self._fs = 1 // value
 
+
 # ===============================================================
 # **************************************************************
 # **************************************************************
-
-
 class PlotAxesList(StackAxes):
     def __init__(self,
                  file_list=None,
@@ -255,15 +253,16 @@ class PlotAxesList(StackAxes):
 
         print("plot_axes_list()")
 
+        axes_name = []
         # ==================================================
         if plot_mode is None:
             fig, ax = plt.subplots(1, 1, figsize=(6, 4))
 
-            axes_name = []
             for i, axes in enumerate(self.axes_list):
                 ax.plot(axes['axes']['time']['t'], axes['axes']['time']['x'])
-                axes_name.append(axes['info']['File Name'])
+                axes_name.append(axes['info']['Legend'])
 
+            ax[0].set_xlim([4.6, 5.6])
             ax.legend(axes_name)
             ax.set_xlabel('Tempo (us)')
             ax.set_ylabel('Amplitude (V)')
@@ -277,7 +276,10 @@ class PlotAxesList(StackAxes):
                                axes['axes']['time']['x'])
                     ax[1].plot(axes['axes']['freq']['f'],
                                axes['axes']['freq']['H'])
+                    axes_name.append(axes['info']['Legend'])
 
+                # ax[0].set_xlim([4.6, 5.6])
+                ax[0].legend(axes_name)
                 ax[0].set_xlabel('Tempo (us)')
                 ax[0].set_ylabel('Amplitude (V)')
                 ax[1].set_xlabel('Freq (MHz)')
@@ -290,7 +292,10 @@ class PlotAxesList(StackAxes):
                                axes['axes']['time']['x'])
                     ax[1].plot(axes['axes']['freq']['f'],
                                axes['axes']['freq']['H_dB'])
-
+                    axes_name.append(axes['info']['Legend'])
+                
+                # ax[0].set_xlim([4.6, 5.6])
+                ax[0].legend(axes_name)
                 ax[0].set_xlabel('Tempo (us)')
                 ax[0].set_ylabel('Amplitude (V)')
                 ax[1].set_xlabel('Freq (MHz)')
@@ -298,21 +303,42 @@ class PlotAxesList(StackAxes):
         # ==================================================
         plt.show()
 
+    @staticmethod
+    def testbench():
+        print(">>> >>> >>> TesTE <<< <<< <<<")
+        file_list=[]
+
+        file_list.append({
+        	    'Board': 'Board A',
+                'File Name': '../13.05/ALL0000/F0000CH1.CSV',
+                'Legend': 'Board A'})
+
+        file_list.append({
+        	    'Board': 'Board B',
+                'File Name': '../13.05/ALL0001/F0001CH1.CSV',
+                'Legend': 'Board B'})
+
+        file_list.append({
+        	    'Board': 'Board C',
+                'File Name': '../13.05/ALL0002/F0002CH1.CSV',
+                'Legend': 'Board C'})
+
+
+        file_list.append({
+        	    'Board': 'Board D',
+                'File Name': '../13.05/ALL0003/F0003CH1.CSV',
+                'Legend': 'Board D'})
+
+        
+        axes_list = PlotAxesList(file_list)
+        
+        axes_list.plot_axes_list(plot_mode='freq_dB')
+        
+        print(">>> >>> >>> EndTE <<< <<< <<<")
+
+
 
 # ===============================================================
 # **************************************************************
 # **************************************************************
-print(">>> >>> >>> TestE <<< <<< <<<")
-
-filename_a = '../13.05/ALL0000/F0000CH1.CSV'
-filename_b = '../13.05/ALL0001/F0001CH1.CSV'
-filename_c = '../13.05/ALL0002/F0002CH1.CSV'
-filename_d = '../13.05/ALL0003/F0003CH1.CSV'
-
-file_list = [filename_a, filename_b, filename_c, filename_d]
-
-axes_list_1 = PlotAxesList(file_list)
-
-axes_list_1.plot_axes_list(plot_mode='freq_dB')
-
-print(">>> >>> >>> EndTe <<< <<< <<<")
+PlotAxesList.testbench()
