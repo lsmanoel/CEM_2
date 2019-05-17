@@ -1,9 +1,9 @@
-# StackAxes
+# StackAxis
 
 ```python
-axes_list [axes_index]{
+axis_list [axis_index]{
 	'info': info_dict, 
-	'axes': axes_dict
+	'axis': axis_dict
 }
 
 	info_dict{
@@ -23,10 +23,10 @@ axes_list [axes_index]{
 		'Firmware Version': firmware_version,
 		'File Name' : file_name
 		'Board': board_name
-		'Legend': axes_legend
+		'Legend': axis_legend
 	}
 
-	axes_dict{
+	axis_dict{
 		'time': time_dict,						
 		'freq': freq_dict					 	
 	}
