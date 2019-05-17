@@ -4,10 +4,8 @@ import json
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy import fftpack
-from scipy.signal import hann
 
-#plt.style.use('fivethirtyeight')
+# plt.style.use('fivethirtyeight')
 plt.style.use('dark_background')
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.serif'] = 'Ubuntu'
