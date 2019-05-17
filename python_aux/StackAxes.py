@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.7
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
@@ -22,7 +23,7 @@ plt.rcParams['figure.figsize'] = 10, 15
 # To look as crispy as osciloscope images:
 plt.rcParams['lines.linewidth'] = 0.01
 plt.rcParams['lines.antialiased'] = False
-# plt.rcParams['axes.facecolor'] = 'black'
+# # plt.rcParams['axes.facecolor'] = 'black'
 
 
 # ===============================================================
@@ -244,8 +245,6 @@ class PlotAxesList(StackAxes):
                          axes_list=axes_list,
                          fs=fs)
 
-        # self.plot_axes_list()
-
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     def plot_axes_list(self,
@@ -338,4 +337,4 @@ class PlotAxesList(StackAxes):
 # ===============================================================
 # **************************************************************
 # **************************************************************
-PlotAxesList.testbench()
+# PlotAxesList.testbench()
