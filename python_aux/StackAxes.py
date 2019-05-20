@@ -303,15 +303,11 @@ class PlotAxesList(StackAxes):
         plt.show()
 
     @staticmethod
-    def testbench_1():
+    def testbench():
         print(">>> >>> >>> TesTE <<< <<< <<<")
-<<<<<<< HEAD
-        print("testbench_1()")
+        print("testbench()")
 
-        file_list=[]
-=======
         file_list = []
->>>>>>> a417c7d1dd8e27d28f3908ace1b0cd2f077cb7cf
 
         file_list.append({
             'Board': 'Board A',
@@ -336,21 +332,13 @@ class PlotAxesList(StackAxes):
         axes_list = PlotAxesList(file_list)
 
         axes_list.plot_axes_list(plot_mode='freq_dB')
-<<<<<<< HEAD
+
         
         print(">>> >>> >>> EndTE <<< <<< <<<")
-        
-=======
 
-        print(">>> >>> >>> EndTE <<< <<< <<<")
-
->>>>>>> a417c7d1dd8e27d28f3908ace1b0cd2f077cb7cf
 
 # ===============================================================
 # **************************************************************
 # **************************************************************
-<<<<<<< HEAD
-PlotAxesList.testbench_1()
-=======
-# PlotAxesList.testbench()
->>>>>>> a417c7d1dd8e27d28f3908ace1b0cd2f077cb7cf
+
+PlotAxesList.testbench()
