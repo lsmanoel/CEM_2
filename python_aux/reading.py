@@ -1,9 +1,10 @@
 #!/usr/bin/env python3.7
-import pandas as pd
 import json
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+
+from Comparison import Comparison
 
 # plt.style.use('fivethirtyeight')
 plt.style.use('dark_background')
@@ -196,49 +197,11 @@ def print_dict_utf8(dictionary):
     print(json.dumps(dictionary, sort_keys=True, indent=2, ensure_ascii=False))
 
 
-def import_comparison_table(filename):
-    df = pd.read_csv(filename, encoding='UTF-8')
-    df.replace(np.nan, '', regex=True, inplace=True)
-
-    def combineIntoDict(name):
-        cols = [f'Board {name}', f'Legend {name}', f'File {name}']
-        df[name] = df.apply(lambda row: {
-            'Board': row[cols[0]],
-            'Legend': row[cols[1]],
-            'File': row[cols[2]],
-        }, axis=1)
-        df.drop(cols, axis=1, inplace=True)
-
-    for char in ['A', 'B', 'C']:
-        combineIntoDict(char)
-
-    experiments_list = []
-    for observation in df.transpose().to_dict().values():
-        file_list = []
-        info_dict = {}
-        for key, data in zip(observation.keys(), observation.values()):
-            if key is 'A' or key is 'B' or key is 'C':
-                if data['File'] is not '':
-                    n = ''.join(filter(str.isdigit, data['File']))
-                    data['File'] = f'../13.05/ALL{n}/F{n}CH1.CSV'
-                    file_list.append(data)
-            else:
-                info_dict.update({key: data})
-
-        experiments_list.append({
-            'info_dict': info_dict,
-            'file_list': file_list,
-        })
-
-    return experiments_list
-
-
 # Comparison table example:
-csvtable = '../CEM - 03.05 - Comparison.csv'
+comparison_csv = '../CEM - 03.05 - Comparison.csv'
+comp1 = Comparison(comparison_csv, '13.05')
 
-experiments_list = import_comparison_table(csvtable)
-
-for i, experiment in enumerate(experiments_list):
+for i, experiment in enumerate(comp1.experiments):
     print(f'Experimento n°{i+1}:')
     print(f"Título: {experiment['info_dict']['Title']}")
     print(f"Descrição: {experiment['info_dict']['Description']}")
@@ -248,9 +211,9 @@ for i, experiment in enumerate(experiments_list):
     print('--------------------------------------------\n')
 
 # Example of usage:
-
-filename_a = experiments_list[1]['file_list'][0]['File']
-filename_b = experiments_list[1]['file_list'][1]['File']
+filename_a = comp1.experiments[1]['file_list'][0]['File']
+filename_b = comp1.experiments[1]['file_list'][1]['File']
 
 ab_plot(filename_a, filename_b, 'BNC', 'COAX')
+
 # end
