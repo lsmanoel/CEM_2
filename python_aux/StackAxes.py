@@ -304,8 +304,10 @@ class PlotAxesList(StackAxes):
         plt.show()
 
     @staticmethod
-    def testbench():
+    def testbench_1():
         print(">>> >>> >>> TesTE <<< <<< <<<")
+        print("testbench_1()")
+
         file_list=[]
 
         file_list.append({
@@ -335,10 +337,9 @@ class PlotAxesList(StackAxes):
         axes_list.plot_axes_list(plot_mode='freq_dB')
         
         print(">>> >>> >>> EndTE <<< <<< <<<")
-
-
+        
 
 # ===============================================================
 # **************************************************************
 # **************************************************************
-PlotAxesList.testbench()
+PlotAxesList.testbench_1()
