@@ -111,7 +111,7 @@ class StackAxes:
                 'Model Number': model_number,
                 'Serial Number': serial_number,
                 'Firmware Version': firmware_version,
-                'File Name': None,
+                'File': None,
                 'Board': None,
                 'Legend': None,
             }
@@ -135,10 +135,10 @@ class StackAxes:
             w = 1
 
         for file in file_list:
-            t, x, info_dict = self.read_tek_tds1012_csv(file['File Name'])
+            t, x, info_dict = self.read_tek_tds1012_csv(file['File'])
 
             info_dict['Board'] = file['Board']
-            info_dict['File Name'] = file['File Name']
+            info_dict['File'] = file['File']
             info_dict['Legend'] = file['Legend']
 
             if fs is None:
@@ -311,22 +311,22 @@ class PlotAxesList(StackAxes):
 
         file_list.append({
             'Board': 'Board A',
-            'File Name': '../13.05/ALL0000/F0000CH1.CSV',
+            'File': '../13.05/ALL0000/F0000CH1.CSV',
             'Legend': 'Board A'})
 
         file_list.append({
             'Board': 'Board B',
-            'File Name': '../13.05/ALL0001/F0001CH1.CSV',
+            'File': '../13.05/ALL0001/F0001CH1.CSV',
             'Legend': 'Board B'})
 
         file_list.append({
             'Board': 'Board C',
-            'File Name': '../13.05/ALL0002/F0002CH1.CSV',
+            'File': '../13.05/ALL0002/F0002CH1.CSV',
             'Legend': 'Board C'})
 
         file_list.append({
             'Board': 'Board D',
-            'File Name': '../13.05/ALL0003/F0003CH1.CSV',
+            'File': '../13.05/ALL0003/F0003CH1.CSV',
             'Legend': 'Board D'})
 
         axes_list = PlotAxesList(file_list)
