@@ -2,18 +2,28 @@
 import pandas as pd
 import numpy as np
 
+# from PySide2.QtCore import Qt, Slot, Property, Signal, QTimer
+from PySide2.QtCore import Slot
+from PySide2.QtQml import qmlRegisterType
+from PySide2.QtQuick import QQuickItem
 
-class Comparison:
-    def __init__(self, filename, experiment_folder):
-        self._filename = filename
-        self._experiment_folder = experiment_folder
-        self._experiments_list = self.load()
+
+class Comparison(QQuickItem):
+    def __init__(self, parent=None):
+        super(Comparison, self).__init__(parent)
+        self._filename = None
+        self._experiment_folder = None
+        self._experiments_list = None
 
     @property
     def experiments(self):
         return self._experiments_list
 
-    def load(self):
+    @Slot(str)
+    def load(self, filename, experiment_folder='13.05'):
+        self._filename = filename
+        self._experiment_folder = experiment_folder
+
         df = pd.read_csv(self._filename, encoding='UTF-8')
         df.replace(np.nan, '', regex=True, inplace=True)
 
@@ -47,4 +57,7 @@ class Comparison:
                 'file_list': file_list,
             })
 
-        return experiments_list
+        self._experiments_list = experiments_list
+
+
+qmlRegisterType(Comparison, 'Comparison', 1, 0, 'Comparison')
