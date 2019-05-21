@@ -333,7 +333,6 @@ class PlotAxesList(StackAxes):
 
         axes_list.plot_axes_list(plot_mode='freq_dB')
 
-        
         print(">>> >>> >>> EndTE <<< <<< <<<")
 
 
@@ -341,4 +340,5 @@ class PlotAxesList(StackAxes):
 # **************************************************************
 # **************************************************************
 
-PlotAxesList.testbench()
+if __name__ == '__main__':
+    PlotAxesList.testbench()
