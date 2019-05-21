@@ -29,20 +29,47 @@ plt.rcParams['lines.antialiased'] = False
 # ===============================================================
 # **************************************************************
 # **************************************************************
-class StackAxes:
+class Axis:
+    def __init__(self,
+             fs=None):
+
+        self._fs = None
+        self._Ts = None
+
+        if fs is not None:
+            self._fs = fs
+            self._Ts = 1 / fs
+
+    @property
+    def fs(self):
+        return self._fs
+
+    @fs.setter
+    def fs(self, value):
+        self._fs = value
+        self._Ts = 1 / value
+
+    @property
+    def Ts(self):
+        return self._fs
+
+    @Ts.setter
+    def Ts(self, value):
+        self._Ts = value
+        self._fs = 1 // value
+
+
+class Axes(Axis):
     def __init__(self,
                  file_list=None,
                  axes_list=None,
                  fs=None):
 
-        self._fs = None
-        self._Ts = None
+        super().__init__(fs=fs)
+
+  
         self._file_list = None
         self._axes_list = None
-
-        if fs is not None:
-            self._fs = fs
-            self._Ts = 1 / fs
 
         elif file_list is not None:
             self._file_list = file_list
@@ -212,24 +239,6 @@ class StackAxes:
     @axes_list.setter
     def axes_list(self, value):
         self._axes_list = value
-
-    @property
-    def fs(self):
-        return self._fs
-
-    @fs.setter
-    def fs(self, value):
-        self._fs = value
-        self._Ts = 1 / value
-
-    @property
-    def Ts(self):
-        return self._fs
-
-    @Ts.setter
-    def Ts(self, value):
-        self._Ts = value
-        self._fs = 1 // value
 
     @property
     def mean(self):
