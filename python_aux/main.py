@@ -7,6 +7,7 @@ from PySide2.QtQml import QQmlApplicationEngine
 
 # Register Foo and use it in QML
 from Comparison import Comparison
+from StackAxes import StackAxes
 
 
 def main():

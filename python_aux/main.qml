@@ -5,6 +5,7 @@ import QtQuick.Controls.Material 2.1
 import Qt.labs.platform 1.0 as QLP
 
 import Comparison 1.0
+import StackAxes 1.0
 
 ApplicationWindow {
     id: window
@@ -41,22 +42,41 @@ ApplicationWindow {
             delegate: Component {
                 Item {
                     width: parent.width
-                    height: 40
-                    Column {
-                        Text { text: 'Name:' + name }
-                        Text { text: 'Number:' + number }
+                    height: 80
+                    ColumnLayout {
+                        Text {
+                            text: 'Title:' + info_dict.Title
+                        }
+                        Text { 
+                            text: 'Observation:' + info_dict.Observation
+                        }
+                        Text { 
+                            wrapMode: Text.WordWrap
+                            text: 'Description:' + info_dict.Description
+                        }
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: experiments_list.currentIndex = index
+                        onClicked: {
+                            console.log("Click in Experiments List")
+                            experiments_list.currentIndex = index
+                        }
+                        onDoubleClicked: {
+                            console.log("Double Click in Experiments List")
+
+
+                        }
                     }
+
                 }
             }
             highlight: Rectangle {
                 color: 'grey'
             }
             focus: true
-            onCurrentItemChanged: console.log(model.get(experiments_list.currentIndex).name + ' selected')
+            onCurrentItemChanged: {
+                console.log(model.get(experiments_list.currentIndex).info_dict.Title + ' selected')
+            }
         }
     }
 
@@ -67,11 +87,10 @@ ApplicationWindow {
         fileMode: QLP.FileDialog.OpenFile
         onOutputChanged: {
             if(!output) {
-                return;
+                return
             }
             print('Opening file', output)
             comparison.load(output)
-            experiments_listModel.append({name: "pera", number: 822})
             experiments_listModel.append(JSON.parse(comparison.experiments_title))
         }
     }

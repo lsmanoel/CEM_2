@@ -3,20 +3,16 @@
 import pandas as pd
 import numpy as np
 
-# from PySide2.QtCore import Qt, Slot, Property, Signal, QTimer
 from PySide2.QtCore import Slot
-from PySide2.QtCore import Signal
+# from PySide2.QtCore import Signal
 from PySide2.QtCore import Property
 from PySide2.QtCore import QObject
 from PySide2.QtQml import qmlRegisterType
 import json
 
 
-# class Comparison(QQuickItem):
-#     def __init__(self, parent=None):
-#         super(Comparison, self).__init__(parent)
 class Comparison(QObject):
-    def __init__(self):
+    def __init__(self, parent=None):
         QObject.__init__(self)
         self._filename = None
         self._experiment_folder = None
@@ -30,12 +26,8 @@ class Comparison(QObject):
     def experiments_title(self):
         # titles = []
         # for experiment in self._experiments_list:
-        #     titles.append(experiment['info_dict']['Title'])
-        # return json.dumps(titles)
-        return json.dumps([
-            {"name": "banana", "number": 9000},
-            {"name": "Batata", "number": 666}
-        ])
+        #     titles.append(experiment['info_dict'])
+        return json.dumps(self.experiments)
 
     @Slot(str)
     def load(self, filename, experiment_folder='13.05'):

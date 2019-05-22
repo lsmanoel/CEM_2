@@ -340,5 +340,8 @@ class PlotAxesList(StackAxes):
 # **************************************************************
 # **************************************************************
 
+qmlRegisterType(StackAxes, 'StackAxes', 1, 0, 'StackAxes')
+qmlRegisterType(PlotAxesList, 'PlotAxesList', 1, 0, 'PlotAxesList')
+
 if __name__ == '__main__':
     PlotAxesList.testbench()
