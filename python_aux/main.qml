@@ -21,11 +21,43 @@ ApplicationWindow {
                 text: "Open..."
                 onTriggered: openFile.visible = true
             }
+            MenuItem {
+                text: "Exit"
+            }
         }
     }
 
-    Comparison{
+    Comparison {
         id: comparison
+    }
+
+    Rectangle {
+        width: parent.width; height: parent.height
+
+        ListView {
+            id: experiments_list
+            anchors.fill: parent
+            model: ListModel { id: experiments_listModel }
+            delegate: Component {
+                Item {
+                    width: parent.width
+                    height: 40
+                    Column {
+                        Text { text: 'Name:' + name }
+                        Text { text: 'Number:' + number }
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: experiments_list.currentIndex = index
+                    }
+                }
+            }
+            highlight: Rectangle {
+                color: 'grey'
+            }
+            focus: true
+            onCurrentItemChanged: console.log(model.get(experiments_list.currentIndex).name + ' selected')
+        }
     }
 
     NewFileDialog {
@@ -39,6 +71,8 @@ ApplicationWindow {
             }
             print('Opening file', output)
             comparison.load(output)
+            experiments_listModel.append({name: "pera", number: 822})
+            experiments_listModel.append(comparison.experiments_title)
         }
     }
 }

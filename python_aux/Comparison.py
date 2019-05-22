@@ -1,9 +1,12 @@
 #!/usr/bin/env python3.7
+# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 
 # from PySide2.QtCore import Qt, Slot, Property, Signal, QTimer
 from PySide2.QtCore import Slot
+from PySide2.QtCore import Signal
+from PySide2.QtCore import Property
 from PySide2.QtQml import qmlRegisterType
 from PySide2.QtQuick import QQuickItem
 
@@ -18,6 +21,27 @@ class Comparison(QQuickItem):
     @property
     def experiments(self):
         return self._experiments_list
+
+    # @property
+    def _experiments_title(self):
+        # titles = []
+        # for experiment in self._experiments_list:
+        #     titles.append(experiment['info_dict']['Title'])
+        # return titles
+        return [
+            {"name": "banana", "number": 9000},
+            {"name": "Batata", "number": 666}
+        ]
+
+    @Signal
+    def listChanged(self):
+        pass
+
+    experiments_title = Property(
+        list,
+        _experiments_title,
+        notify=listChanged
+    )
 
     @Slot(str)
     def load(self, filename, experiment_folder='13.05'):
