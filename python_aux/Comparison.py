@@ -9,8 +9,6 @@ from PySide2.QtCore import Signal
 from PySide2.QtCore import Property
 from PySide2.QtCore import QObject
 from PySide2.QtQml import qmlRegisterType
-from PySide2.QtQuick import QQuickItem
-from PySide2.QtGui import QStandardItem
 import json
 
 
@@ -28,8 +26,8 @@ class Comparison(QObject):
     def experiments(self):
         return self._experiments_list
 
-    # @property
-    def _experiments_title(self):
+    @Property(str)
+    def experiments_title(self):
         # titles = []
         # for experiment in self._experiments_list:
         #     titles.append(experiment['info_dict']['Title'])
@@ -38,16 +36,6 @@ class Comparison(QObject):
             {"name": "banana", "number": 9000},
             {"name": "Batata", "number": 666}
         ])
-
-    @Signal
-    def listChanged(self):
-        pass
-
-    experiments_title = Property(
-        str,
-        _experiments_title,
-        notify=listChanged
-    )
 
     @Slot(str)
     def load(self, filename, experiment_folder='13.05'):
