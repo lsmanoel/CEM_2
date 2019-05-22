@@ -49,7 +49,7 @@ class Axis:
             Ts = info_dict['Sample Interval']
             fs = 1 / Ts
       
-            info_dict['Board'] = file['Board']
+            info_dict['Eut'] = file['Eut']
             info_dict['File'] = file['File']
             info_dict['Legend'] = file['Legend']
             info_dict['Signal Freq'] = file['Signal Freq']
@@ -102,7 +102,7 @@ class Axis:
 
             axis = {
                 'info': info_dict, 
-                'axis': data_dict
+                'data': data_dict
             }
 
             return axis
@@ -173,7 +173,7 @@ class Axis:
                     'Model Number': model_number,
                     'Serial Number': serial_number,
                     'Firmware Version': firmware_version,
-                    'Board': None,
+                    'Eut': None,
                     'File': None,
                     'Legend': None,
                     'Signal Freq': None
@@ -181,6 +181,27 @@ class Axis:
 
             return np.array(raw_x), np.array(raw_y), info_dict
 
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    @staticmethod
+    def measurements(axis):
+        axis_measurements = {
+            'Eut': axis['info']['Eut'],
+            'Max': np.amax(axis['data']['time']['sig']),
+            'Min': np.amin(axis['data']['time']['sig']),
+            'Pk-Pk': np.ptp(axis['data']['time']['sig']),
+            'Mean': np.mean(axis['data']['time']['sig']),
+            'RMS': np.sqrt(np.mean((axis['data']['time']['sig'])**2)),
+        }
+
+        return axis_measurements
+
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    @staticmethod
+    def print_dict(dict):
+        for key, value in dict.items():
+            print(f'\t{key}: {value}')
 
 # ===============================================================
 # **************************************************************
@@ -195,7 +216,7 @@ class Axes(Axis):
                    files,
                    window=1):
 
-        print("file2axes_list()")
+        print("file2axes")
 
         axes = []
 
@@ -209,7 +230,38 @@ class Axes(Axis):
         # ==================================================
         return axes
 
- 
+
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    @staticmethod
+    def measurements(axes):
+
+        axes_measurements = []
+
+        for axis in axes:
+            axis_measurements = {
+                'Eut': axis['info']['Eut'],
+                'Max': np.amax(axis['data']['time']['sig']),
+                'Min': np.amin(axis['data']['time']['sig']),
+                'Pk-Pk': np.ptp(axis['data']['time']['sig']),
+                'Mean': np.mean(axis['data']['time']['sig']),
+                'RMS': np.sqrt(np.mean((axis['data']['time']['sig'])**2)),
+            }
+            axes_measurements.append(axis_measurements)
+
+        return axes_measurements
+
+
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    @staticmethod
+    def print_dict(dicts):
+        for dict in dicts:
+            print('___')
+            for key, value in dict.items():
+                print(f'\t{key}: {value}')
+
+
 # ===============================================================
 # **************************************************************
 # **************************************************************
@@ -241,13 +293,13 @@ class PlotAxes(Axes):
         # -------------------------------------------------
         else:
             if plot_mode == 'freq':
-                fig, ax = plt.subplots(2, 1, figsize=(6, 8))
+                fig, ax = plt.subplots(2, 1, figsize=(6, 7))
 
                 for axis in axes:
-                    ax[0].plot(axis['axis']['time']['t'],
-                               axis['axis']['time']['sig'])
-                    ax[1].plot(axis['axis']['freq']['f'],
-                               axis['axis']['freq']['H'])
+                    ax[0].plot(axis['data']['time']['t'],
+                               axis['data']['time']['sig'])
+                    ax[1].plot(axis['data']['freq']['f'],
+                               axis['data']['freq']['H'])
                     axis_legend.append(axis['info']['Legend'])
 
                 # ax[0].set_xlim([4.6, 5.6])
@@ -258,12 +310,12 @@ class PlotAxes(Axes):
                 ax[1].set_ylabel('Amplitude (linear)')
             # -------------------------------------------------
             elif plot_mode == 'freq_dB':
-                fig, ax = plt.subplots(2, 1, figsize=(6, 8))
+                fig, ax = plt.subplots(2, 1, figsize=(6, 7))
                 for axis in axes:
-                    ax[0].plot(axis['axis']['time']['t'],
-                               axis['axis']['time']['sig'])
-                    ax[1].plot(axis['axis']['freq']['f'],
-                               axis['axis']['freq']['H_dB'])
+                    ax[0].plot(axis['data']['time']['t'],
+                               axis['data']['time']['sig'])
+                    ax[1].plot(axis['data']['freq']['f'],
+                               axis['data']['freq']['H_dB'])
                     axis_legend.append(axis['info']['Legend'])
 
                 # ax[0].set_xlim([4.6, 5.6])
@@ -283,35 +335,33 @@ class PlotAxes(Axes):
         files = []
 
         files.append({
-            'Board': 'Board A',
+            'Eut': 'Board A',
             'File': '../13.05/ALL0000/F0000CH1.CSV',
             'Legend': 'Board A',
             'Signal Freq': 2e6})
 
         files.append({
-            'Board': 'Board B',
+            'Eut': 'Board B',
             'File': '../13.05/ALL0001/F0001CH1.CSV',
             'Legend': 'Board B',
             'Signal Freq': 2e6})
 
         files.append({
-            'Board': 'Board C',
+            'Eut': 'Board C',
             'File': '../13.05/ALL0002/F0002CH1.CSV',
             'Legend': 'Board C',
             'Signal Freq': 2e6})
 
         files.append({
-            'Board': 'Board D',
+            'Eut': 'Board D',
             'File': '../13.05/ALL0003/F0003CH1.CSV',
             'Legend': 'Board D',
             'Signal Freq': 2e6})
 
-        axes = PlotAxes()
-
-        axes.plot_axes(
-            axes.files2axes(files,
-                            window=1), 
-            plot_mode='freq_dB')
+        ploter = PlotAxes()
+        axes = ploter.files2axes(files, window=1)
+        ploter.print_dict(ploter.measurements(axes))
+        ploter.plot_axes(axes, plot_mode='freq_dB')
 
         print(">>> >>> >>> EndTE <<< <<< <<<")
 
@@ -322,70 +372,3 @@ class PlotAxes(Axes):
 
 if __name__ == '__main__':
     PlotAxes.testbench()
-
-
-#     # ===========================================================
-#     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#     @property
-#     def fs(self):
-#         return self._fs
-#     @fs.setter
-#     def fs(self, value):
-#         self._fs = value
-#         self._Ts = 1 / value
-
-#     @property
-#     def Ts(self):
-#         return self._fs
-#     @Ts.setter
-#     def Ts(self, value):
-#         self._Ts = value
-#         self._fs = 1 // value
-
-#     @property
-#     def window(self):
-#         return self._window
-#     @window.setter
-#     def window(self, value):
-#         self._window = value
-#         self._window = 1 // value
-
-#     @property
-#     def sig_f(self):
-#         return self.sig_f
-#     @sig_f.setter
-#     def sig_f(self, value):
-#         self._sig_f = value
-#         self._sig_T = 1 / value
-
-#     @property
-#     def sig_T(self):
-#         return self.sig_T
-#     @sig_T.setter
-#     def sig_T(self, value):
-#         self._sig_T = value
-#         self._sig_T = 1 / value
-
-#     @property
-#     def N(self):
-#         return self._N
-
-#     @property
-#     def t(self):
-#         return self._t
-
-#     @property
-#     def H(self):
-#         return self._H
-
-#     @property
-#     def H_db(self):
-#         return self._H_db
-
-#     @property
-#     def f(self):
-#         return self._f
-
-#     @property
-#     def info_dict(self):
-#         return self._info_dict
