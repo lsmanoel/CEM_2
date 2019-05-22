@@ -72,7 +72,7 @@ ApplicationWindow {
             print('Opening file', output)
             comparison.load(output)
             experiments_listModel.append({name: "pera", number: 822})
-            experiments_listModel.append(comparison.experiments_title)
+            experiments_listModel.append(JSON.parse(comparison.experiments_title))
         }
     }
 }

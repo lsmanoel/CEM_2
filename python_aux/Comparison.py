@@ -7,13 +7,19 @@ import numpy as np
 from PySide2.QtCore import Slot
 from PySide2.QtCore import Signal
 from PySide2.QtCore import Property
+from PySide2.QtCore import QObject
 from PySide2.QtQml import qmlRegisterType
 from PySide2.QtQuick import QQuickItem
+from PySide2.QtGui import QStandardItem
+import json
 
 
-class Comparison(QQuickItem):
-    def __init__(self, parent=None):
-        super(Comparison, self).__init__(parent)
+# class Comparison(QQuickItem):
+#     def __init__(self, parent=None):
+#         super(Comparison, self).__init__(parent)
+class Comparison(QObject):
+    def __init__(self):
+        QObject.__init__(self)
         self._filename = None
         self._experiment_folder = None
         self._experiments_list = None
@@ -27,18 +33,18 @@ class Comparison(QQuickItem):
         # titles = []
         # for experiment in self._experiments_list:
         #     titles.append(experiment['info_dict']['Title'])
-        # return titles
-        return [
+        # return json.dumps(titles)
+        return json.dumps([
             {"name": "banana", "number": 9000},
             {"name": "Batata", "number": 666}
-        ]
+        ])
 
     @Signal
     def listChanged(self):
         pass
 
     experiments_title = Property(
-        list,
+        str,
         _experiments_title,
         notify=listChanged
     )
