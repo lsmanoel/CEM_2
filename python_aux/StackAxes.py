@@ -2,6 +2,9 @@
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+from PySide2.QtCore import QObject
+from PySide2.QtCore import Slot
+from PySide2.QtQml import qmlRegisterType
 
 # Plots configuration
 # list of styles:
@@ -29,11 +32,13 @@ plt.rcParams['lines.antialiased'] = False
 # ===============================================================
 # **************************************************************
 # **************************************************************
-class StackAxes:
+class StackAxes(QObject):
     def __init__(self,
                  file_list=None,
                  axes_list=None,
-                 fs=None):
+                 fs=None,
+                 parent=None):
+        QObject.__init__(self)
 
         self._fs = None
         self._Ts = None
@@ -247,6 +252,7 @@ class PlotAxesList(StackAxes):
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    @Slot(str)
     def plot_axes_list(self,
                        plot_mode=None):
 

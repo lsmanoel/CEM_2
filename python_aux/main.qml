@@ -6,6 +6,7 @@ import Qt.labs.platform 1.0 as QLP
 
 import Comparison 1.0
 import StackAxes 1.0
+import PlotAxesList 1.0
 
 ApplicationWindow {
     id: window
@@ -37,6 +38,7 @@ ApplicationWindow {
 
         ListView {
             id: experiments_list
+            property var selected: null
             anchors.fill: parent
             model: ListModel { id: experiments_listModel }
             delegate: Component {
@@ -63,8 +65,7 @@ ApplicationWindow {
                         }
                         onDoubleClicked: {
                             console.log("Double Click in Experiments List")
-
-
+                            PlotAxesList(experiments_list.selected.file_list).plot_axes_list()
                         }
                     }
 
@@ -76,6 +77,8 @@ ApplicationWindow {
             focus: true
             onCurrentItemChanged: {
                 console.log(model.get(experiments_list.currentIndex).info_dict.Title + ' selected')
+                experiments_list.selected = experiments_listModel.get(experiments_list.currentIndex)
+                console.log(experiments_list.selected)
             }
         }
     }

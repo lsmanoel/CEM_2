@@ -24,9 +24,6 @@ class Comparison(QObject):
 
     @Property(str)
     def experiments_title(self):
-        # titles = []
-        # for experiment in self._experiments_list:
-        #     titles.append(experiment['info_dict'])
         return json.dumps(self.experiments)
 
     @Slot(str)
