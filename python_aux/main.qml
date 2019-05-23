@@ -33,6 +33,10 @@ ApplicationWindow {
         id: comparison
     }
 
+    PlotAxesList {
+        id: plotAxesList
+    }
+
     Rectangle {
         width: parent.width; height: parent.height
 
@@ -65,7 +69,9 @@ ApplicationWindow {
                         }
                         onDoubleClicked: {
                             console.log("Double Click in Experiments List")
-                            PlotAxesList(experiments_list.selected.file_list).plot_axes_list()
+                            // PlotAxesList(experiments_list.selected.file_list).plot_axes_list() // nao funciona
+                            plotAxesList.plot_axes_list() // tenta plotar None
+                            // plotAxesList.testbench() // o exemplo funciona
                         }
                     }
 

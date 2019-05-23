@@ -252,7 +252,7 @@ class PlotAxesList(StackAxes):
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    @Slot(str)
+    @Slot()
     def plot_axes_list(self,
                        plot_mode=None):
 
