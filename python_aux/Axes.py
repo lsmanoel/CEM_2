@@ -1,7 +1,8 @@
 #!/usr/bin/env python3.7
 import csv
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
 
 # Plots configuration
 # list of styles:
@@ -268,10 +269,11 @@ class Axes(Axis):
 class PlotAxes(Axes):
     def __init__(self):
         pass
+
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    def plot_axes(self,
-                  axes,
+    @staticmethod
+    def plot_axes(axes,
                   sig_f=None,
                   plot_mode=None):
 
@@ -290,6 +292,70 @@ class PlotAxes(Axes):
             ax.legend(axis_legend)
             ax.set_xlabel('Tempo (us)')
             ax.set_ylabel('Amplitude (V)')
+        # -------------------------------------------------
+        else:
+            if plot_mode == 'freq':
+                fig, ax = plt.subplots(2, 1, figsize=(6, 7))
+
+                for axis in axes:
+                    ax[0].plot(axis['data']['time']['t'],
+                               axis['data']['time']['sig'])
+                    ax[1].plot(axis['data']['freq']['f'],
+                               axis['data']['freq']['H'])
+                    axis_legend.append(axis['info']['Legend'])
+
+                # ax[0].set_xlim([4.6, 5.6])
+                ax[0].legend(axis_legend)
+                ax[0].set_xlabel('Tempo (us)')
+                ax[0].set_ylabel('Amplitude (V)')
+                ax[1].set_xlabel('Freq (MHz)')
+                ax[1].set_ylabel('Amplitude (linear)')
+            # -------------------------------------------------
+            elif plot_mode == 'freq_dB':
+                fig, ax = plt.subplots(2, 1, figsize=(6, 7))
+                for axis in axes:
+                    ax[0].plot(axis['data']['time']['t'],
+                               axis['data']['time']['sig'])
+                    ax[1].plot(axis['data']['freq']['f'],
+                               axis['data']['freq']['H_dB'])
+                    axis_legend.append(axis['info']['Legend'])
+
+                # ax[0].set_xlim([4.6, 5.6])
+                ax[0].legend(axis_legend)
+                ax[0].set_xlabel('Tempo (us)')
+                ax[0].set_ylabel('Amplitude (V)')
+                ax[1].set_xlabel('Freq (MHz)')
+                ax[1].set_ylabel('Amplitude (dB)')
+        # ==================================================
+        plt.show()
+
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    @staticmethod
+    def plot_axes_2(axes,
+                  sig_f=None,
+                  plot_mode=None):
+
+        print("plot_axes_2()")
+
+        axis_legend = []
+        # ==================================================
+        if plot_mode is None:
+            fig = plt.figure(constrained_layout=True)
+            gs = GridSpec(8, 8, figure=fig)
+
+            ax_a = fig.add_subplot(gs[:, :7])
+            ax_b = fig.add_subplot(gs[:, :-1])
+
+            for i, axis in enumerate(axes):
+                ax_a.plot(axis['data']['time']['t'], axis['data']['time']['sig'])
+                ax_b.plot(axis['data']['time']['t'], axis['data']['time']['sig'])
+                axis_legend.append(axis['info']['Legend'])
+
+            ax_a.set_xlim([4.6, 5.6])
+            ax_a.legend(axis_legend)
+            ax_a.set_xlabel('Tempo (us)')
+            ax_a.set_ylabel('Amplitude (V)')
         # -------------------------------------------------
         else:
             if plot_mode == 'freq':
@@ -362,6 +428,7 @@ class PlotAxes(Axes):
         axes = ploter.files2axes(files, window=1)
         ploter.print_dict(ploter.measurements(axes))
         ploter.plot_axes(axes, plot_mode='freq_dB')
+        ploter.plot_axes_2(axes)
 
         print(">>> >>> >>> EndTE <<< <<< <<<")
 
