@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.7
+import os
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
@@ -52,6 +53,7 @@ class Axis:
       
             info_dict['Eut'] = file['Eut']
             info_dict['File'] = file['File']
+            info_dict['Photo'] = file['Photo']
             info_dict['Legend'] = file['Legend']
             info_dict['Signal Freq'] = file['Signal Freq']
             sig_f = file['Signal Freq'];
@@ -176,6 +178,7 @@ class Axis:
                     'Firmware Version': firmware_version,
                     'Eut': None,
                     'File': None,
+                    'Photo': None,
                     'Legend': None,
                     'Signal Freq': None
                 }
@@ -282,7 +285,7 @@ class PlotAxes(Axes):
         axis_legend = []
         # ==================================================
         if plot_mode is None:
-            fig = plt.figure(constrained_layout=True, figsize=(8, 7))
+            fig = plt.figure(constrained_layout=True, figsize=(6, 4))
             gs = GridSpec(8, 8, figure=fig)
 
             ax_a = fig.add_subplot(gs[:, :-1])
@@ -305,7 +308,7 @@ class PlotAxes(Axes):
         # -------------------------------------------------
         else:
             if plot_mode == 'freq':
-                fig = plt.figure(figsize=(8, 7))
+                fig = plt.figure(figsize=(6, 3))
 
                 for axis in axes:
                     plt.plot(axis['data']['freq']['f'],
@@ -318,7 +321,7 @@ class PlotAxes(Axes):
                 plt.ylabel('Amplitude (linear)')
             # -------------------------------------------------
             elif plot_mode == 'freq_dB':
-                fig = plt.figure(figsize=(8, 7))
+                fig = plt.figure(figsize=(6, 3))
 
                 for axis in axes:
                     plt.plot(axis['data']['freq']['f'],
@@ -329,6 +332,18 @@ class PlotAxes(Axes):
                 plt.legend(axis_legend)
                 plt.xlabel('Freq (MHz)')
                 plt.ylabel('Amplitude (dB)')
+                        # -------------------------------------------------
+            elif plot_mode == 'photo':               
+                for axis in axes:
+                    plt.figure(figsize=(6,3))
+                    image = plt.imread(axis['info']['Photo'])
+                    plt.title(axis['info']['Legend'])
+                    plt.imshow(image)
+                    plt.grid(False)
+                    plt.xticks([])
+                    plt.yticks([])
+
+
         # ==================================================
         # plt.show()
 
@@ -339,28 +354,26 @@ class PlotAxes(Axes):
 
         files = []
 
-        files.append({
-            'Eut': 'Board A',
-            'File': '../13.05/ALL0000/F0000CH1.CSV',
-            'Legend': 'Board A',
-            'Signal Freq': 2e6})
 
         files.append({
-            'Eut': 'Board B',
+            'Eut': 'ALL0001 - 13.05',
             'File': '../13.05/ALL0001/F0001CH1.CSV',
-            'Legend': 'Board B',
+            'Photo': '../13.05/img/all0001_13_5.jpg',
+            'Legend': 'ALL0001 - 13.05',
             'Signal Freq': 2e6})
 
         files.append({
-            'Eut': 'Board C',
+            'Eut': 'ALL0002 - 13.05',
             'File': '../13.05/ALL0002/F0002CH1.CSV',
-            'Legend': 'Board C',
+            'Photo': '../13.05/img/all0002_13_5.jpg',
+            'Legend': 'ALL0002 - 13.05',
             'Signal Freq': 2e6})
 
         files.append({
-            'Eut': 'Board D',
+            'Eut': 'ALL0003 - 13.05',
             'File': '../13.05/ALL0003/F0003CH1.CSV',
-            'Legend': 'Board D',
+            'Photo': '../13.05/img/all0003_13_5.jpg',
+            'Legend': 'ALL0003 - 13.05',
             'Signal Freq': 2e6})
 
         axes = PlotAxes().files2axes(files, window=1)
@@ -370,6 +383,8 @@ class PlotAxes(Axes):
         PlotAxes().plot_axes(axes, plot_mode='freq_dB')
 
         PlotAxes().plot_axes(axes)
+
+        PlotAxes().plot_axes(axes, plot_mode='photo')
 
         plt.show()
 
