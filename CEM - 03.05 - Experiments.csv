@@ -7,9 +7,9 @@ Data,EUT,Pad_L,Pad_R,Pad_M,Chain,Sig_Pad_Type,Prob_Pad_Type,Gnd_Pad_Type,Sig_Typ
 03/05/2019,board_1,sig,prob,,,bnc_terminal,bnc_terminal,,freq,ALL0005,
 06/05/2019,short,,,,,coax,coax,,time,ALL0007,cabo coaxial direto entre gerador e oscilosc�pio
 06/05/2019,short,,,,,bnc_terminal,bnc_terminal,,time,ALL0008,cabo coaxial com conectores BNC entre gerador e oscilosc�pio
-06/05/2019,board_1,sig,sig,,,bnc_terminal,bnc_terminal,,time,ALL0009,
-06/05/2019,board_2,sig,sig,,,bnc_terminal,bnc_terminal,,time,ALL0010,
-06/05/2019,board_3,sig,sig,,,bnc_terminal,bnc_terminal,,time,ALL0011,
+06/05/2019,board_1,sig,prob,,,bnc_terminal,bnc_terminal,,time,ALL0009,
+06/05/2019,board_2,sig,prob,,,bnc_terminal,bnc_terminal,,time,ALL0010,
+06/05/2019,board_3,sig,prob,,,bnc_terminal,bnc_terminal,,time,ALL0011,
 06/05/2019,board_4,sig,off,prob,,bnc_terminal,bnc_terminal,,time,ALL0012,
 06/05/2019,board_4,sig,gnd,prob,,bnc_terminal,bnc_terminal,bnc_terminal,time,ALL0013,
 06/05/2019,board_4,sig,prob,off,,bnc_terminal,bnc_terminal,,time,ALL0014,
@@ -37,11 +37,11 @@ Data,EUT,Pad_L,Pad_R,Pad_M,Chain,Sig_Pad_Type,Prob_Pad_Type,Gnd_Pad_Type,Sig_Typ
 06/05/2019,board_9,sig,prob,,,bnc_terminal,bnc_terminal,,time,ALL0037,Detalhe no formato de onda com a conex�o adicional ao circuito da ponteira Tektronix no Ch2 do oscilosc�pio
 06/05/2019,board_9,sig,prob,,,bnc_terminal,bnc_terminal,,time,ALL0038,Detalhe no formato de onda com a desconex�o adicional ao circuito da ponteira Tektronix no Ch2 do oscilosc�pio
 13/05/2019,short,,,,,fgen_cable,osc_cable,,time,ALL0000,cabos entre gerador e oscilosc�pio
-13/05/2019,board_1,sig,sig,,,fgen_cable,osc_cable,,time,ALL0001,
-13/05/2019,board_2,sig,sig,,,fgen_cable,osc_cable,,time,ALL0002,
-13/05/2019,board_3,sig,sig,,,fgen_cable,osc_cable,,time,ALL0003,
-13/05/2019,board_4,sig,off,prob,,fgen_cable,osc_cable,,time,ALL0004,
-13/05/2019,board_4,sig,gnd,prob,,fgen_cable,osc_cable,fgen_cable,time,ALL0005,
+13/05/2019,board_1,sig,prob,,,fgen_cable,osc_cable,,time,ALL0001,
+13/05/2019,board_2,sig,prob,,,fgen_cable,osc_cable,,time,ALL0002,
+13/05/2019,board_3,sig,prob,,,fgen_cable,osc_cable,,time,ALL0003,
+13/05/2019,board_4,prob,off,sig,,fgen_cable,osc_cable,,time,ALL0004,
+13/05/2019,board_4,prob,gnd,sig,,fgen_cable,osc_cable,fgen_cable,time,ALL0005,
 13/05/2019,board_4,sig,prob,off,,fgen_cable,osc_cable,,time,ALL0006,
 13/05/2019,board_4,sig,prob,gnd,,fgen_cable,osc_cable,fgen_cable,time,ALL0007,
 13/05/2019,board_5,sig,prob,,off,fgen_cable,osc_cable,,time,ALL0008,
