@@ -1,7 +1,15 @@
 # Axes
 
 ```python
-info_dict{
+file_example = {
+    'Eut': 'ALL0001 - 13.05',
+    'File': '../13.05/ALL0001/F0001CH1.CSV',
+    'Photo': '../13.05/img/all0001_13_5.jpg',
+    'Legend': 'ALL0001 - 13.05',
+    'Signal Freq': 2e6
+}
+
+info_dict = {
 	'Record Length': record_length,
 	'Sample Interval': sample_interval,
 	'Source': source,
@@ -16,9 +24,11 @@ info_dict{
 	'Model Number': model_number,
 	'Serial Number': serial_number,
 	'Firmware Version': firmware_version,
-	'File Name' : file_name,
-	'Board': board_name,
-	'Legend': axes_legend,
+	'Eut': file_example['Eut'],
+	'File' : file_example['File'],
+	'Photo': file_example['Photo'],
+	'Legend': file_example['Legend'],
+	'Signal Freq': file_example['Signal Freq']
 }
 
 data_dict = {
