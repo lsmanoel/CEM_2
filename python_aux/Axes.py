@@ -343,17 +343,11 @@ class PlotAxes(Axes):
                     plt.xticks([])
                     plt.yticks([])
 
-
-        # ==================================================
-        # plt.show()
-
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     @staticmethod
-    def testbench():
-        print(">>> >>> >>> TesTE <<< <<< <<<")
-        print("testbench()")
-
+    def files_example():
         files = []
-
 
         files.append({
             'Eut': 'ALL0001 - 13.05',
@@ -376,6 +370,36 @@ class PlotAxes(Axes):
             'Legend': 'ALL0003 - 13.05',
             'Signal Freq': 2e6})
 
+        return files
+
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    @staticmethod
+    def plot_file(File=None):
+        if File is None:
+            files = PlotAxes().files_example()
+
+        axes = PlotAxes().files2axes(files, window=1)
+
+        PlotAxes().print_dict(PlotAxes().measurements(axes))
+
+        PlotAxes().plot_axes(axes, plot_mode='freq_dB')
+
+        PlotAxes().plot_axes(axes)
+
+        PlotAxes().plot_axes(axes, plot_mode='photo')
+
+        plt.show()
+
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    @staticmethod
+    def testbench():
+        print(">>> >>> >>> TesTE <<< <<< <<<")
+        print("testbench()")
+
+        files = PlotAxes().files_example()
+
         axes = PlotAxes().files2axes(files, window=1)
 
         PlotAxes().print_dict(PlotAxes().measurements(axes))
@@ -396,4 +420,4 @@ class PlotAxes(Axes):
 # **************************************************************
 
 if __name__ == '__main__':
-    PlotAxes.testbench()
+    PlotAxes.plot_file()
