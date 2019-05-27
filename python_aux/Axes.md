@@ -55,7 +55,7 @@ axis = {
 
 ```
 
-## Files =[list of File]**	
+## Files =[list of File]	
 ```python
 file_example = {
     'Eut': 'ALL0001 - 13.05',
