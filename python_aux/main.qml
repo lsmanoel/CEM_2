@@ -5,8 +5,7 @@ import QtQuick.Controls.Material 2.1
 import Qt.labs.platform 1.0 as QLP
 
 import Comparison 1.0
-import StackAxes 1.0
-import PlotAxesList 1.0
+import PlotAxes 1.0
 
 ApplicationWindow {
     id: window
@@ -33,8 +32,8 @@ ApplicationWindow {
         id: comparison
     }
 
-    PlotAxesList {
-        id: plotAxesList
+    PlotAxes {
+        id: plotAxes
     }
 
     Rectangle {
@@ -70,8 +69,19 @@ ApplicationWindow {
                         onDoubleClicked: {
                             console.log("Double Click in Experiments List")
                             // PlotAxesList(experiments_list.selected.file_list).plot_axes_list() // nao funciona
-                            plotAxesList.plot_axes_list() // tenta plotar None
+                            // plotAxesList.plot_axes_list() // tenta plotar None
                             // plotAxesList.testbench() // o exemplo funciona
+
+                            // plotAxes.plot_axes(
+                            //     plotAxes.files2axes(
+                            //         // experiments_list.selected.file_list,
+                            //         plotAxes.files_example(), 
+                            //         1), 
+                            //     'freq_dB'
+                            // )
+                            // plotAxes.plot_file(experiments_list.selected.file_list)
+                            // plotAxes.plot_file(plotAxes.files_example())
+                            plotAxes.plot_file(PlotAxes.files_example)
                         }
                     }
 
