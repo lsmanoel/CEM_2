@@ -81,7 +81,15 @@ ApplicationWindow {
                             // )
                             // plotAxes.plot_file(experiments_list.selected.file_list)
                             // plotAxes.plot_file(plotAxes.files_example())
-                            plotAxes.plot_file(PlotAxes.files_example)
+                            // plotAxes.plot_file(PlotAxes.files_example)
+                            var files = plotAxes.files_example()
+                            var axes = plotAxes.files2axes(files)
+                            plotAxes.plot_axes(axes)
+                            plotAxes.show()
+
+
+
+                            // PlotAxes.plot_file()
                         }
                     }
 

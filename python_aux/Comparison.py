@@ -65,6 +65,3 @@ class Comparison(QObject):
             })
 
         self._experiments_list = experiments_list
-
-
-qmlRegisterType(Comparison, 'Comparison', 1, 0, 'Comparison')
