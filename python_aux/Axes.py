@@ -5,6 +5,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
+from PySide2.QtCore import Slot
+# from PySide2.QtCore import Signal
+from PySide2.QtCore import Property
+from PySide2.QtCore import QObject
+import json
+
 # Plots configuration
 # list of styles:
 
@@ -31,8 +37,9 @@ plt.rcParams['lines.antialiased'] = False
 # ===============================================================
 # **************************************************************
 # **************************************************************
-class Axis:
+class Axis(QObject):
     def __init__(self):
+        QObject.__init__(self)
         pass
 
     # ===========================================================
@@ -50,13 +57,13 @@ class Axis:
 
             Ts = info_dict['Sample Interval']
             fs = 1 / Ts
-      
+
             info_dict['Eut'] = file['Eut']
             info_dict['File'] = file['File']
             info_dict['Photo'] = file['Photo']
             info_dict['Legend'] = file['Legend']
             info_dict['Signal Freq'] = file['Signal Freq']
-            sig_f = file['Signal Freq'];
+            sig_f = file['Signal Freq']
 
             # **************************************************
             # --------------------------------------------------
@@ -77,12 +84,12 @@ class Axis:
 
             # --------------------------------------------------
             time_dict = {
-                't': t, 
+                't': t,
                 'sig': sig
             }
 
             freq_dict = {
-                'f': f ,
+                'f': f,
                 'H': H,
                 'H_dB': H_dB
             }
@@ -104,20 +111,19 @@ class Axis:
                 info_dict['Window'] = 1
 
             axis = {
-                'info': info_dict, 
+                'info': info_dict,
                 'data': data_dict
             }
 
             return axis
 
-
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Miscellaneous
-    def read_csv(self, 
-                 file_name, 
-                 type="tek_tds1012"):# tds1012
-        
+    def read_csv(self,
+                 file_name,
+                 type="tek_tds1012"):  # tds1012
+
         if type == "tek_tds1012":
             raw_x = []
             raw_y = []
@@ -210,14 +216,19 @@ class Axis:
 # ===============================================================
 # **************************************************************
 # **************************************************************
+
+
 class Axes(Axis):
     def __init__(self):
+        super().__init__()
         pass
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    @staticmethod
-    def files2axes(files,
+    # @staticmethod
+    @Slot(list, result=list)
+    def files2axes(self,
+                   files,
                    window=1):
 
         print("file2axes")
@@ -227,16 +238,16 @@ class Axes(Axis):
         for file in files:
             axes.append(
                 super().file2axis(file,
-                               window=window)       
+                                  window=window)
             )
         # --------------------------------------------------
         print("len(axes): ", len(axes))
         # ==================================================
         return axes
 
-
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     @staticmethod
     def measurements(axes):
 
@@ -255,9 +266,9 @@ class Axes(Axis):
 
         return axes_measurements
 
-
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     @staticmethod
     def print_dict(dicts):
         for dict in dicts:
@@ -271,12 +282,15 @@ class Axes(Axis):
 # **************************************************************
 class PlotAxes(Axes):
     def __init__(self):
+        super().__init__()
         pass
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    @staticmethod
-    def plot_axes(axes,
+    # @staticmethod
+    @Slot(list)
+    def plot_axes(self,
+                  axes,
                   sig_f=None,
                   plot_mode=None):
 
@@ -292,8 +306,9 @@ class PlotAxes(Axes):
             ax_b = fig.add_subplot(gs[:, -1])
 
             for i, axis in enumerate(axes):
-                ax_a.plot(axis['data']['time']['t'], axis['data']['time']['sig'])
-                axis_measurements = Axis().measurements(axis) 
+                ax_a.plot(axis['data']['time']['t'],
+                          axis['data']['time']['sig'])
+                axis_measurements = Axis().measurements(axis)
                 ax_b.bar(i, axis_measurements['RMS'])
                 axis_legend.append(axis['info']['Legend'])
 
@@ -303,7 +318,6 @@ class PlotAxes(Axes):
             ax_a.set_ylabel('Amplitude (V)')
 
             ax_b.set_ylabel('Amplitude (RMS)')
-
 
         # -------------------------------------------------
         else:
@@ -332,10 +346,10 @@ class PlotAxes(Axes):
                 plt.legend(axis_legend)
                 plt.xlabel('Freq (MHz)')
                 plt.ylabel('Amplitude (dB)')
-                        # -------------------------------------------------
-            elif plot_mode == 'photo':               
+                # -------------------------------------------------
+            elif plot_mode == 'photo':
                 for axis in axes:
-                    plt.figure(figsize=(6,3))
+                    plt.figure(figsize=(6, 3))
                     image = plt.imread(axis['info']['Photo'])
                     plt.title(axis['info']['Legend'])
                     plt.imshow(image)
@@ -345,8 +359,9 @@ class PlotAxes(Axes):
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    @staticmethod
-    def files_example():
+    # @staticmethod
+    @Slot(result=list)
+    def files_example(self):
         files = []
 
         files.append({
@@ -372,12 +387,19 @@ class PlotAxes(Axes):
 
         return files
 
+    @Slot()
+    def show(self):
+        plt.show()
+
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    @staticmethod
+    # @staticmethod
+    @Slot(str)
     def plot_file(File=None):
         if File is None:
             files = PlotAxes().files_example()
+        else:
+            files = File
 
         axes = PlotAxes().files2axes(files, window=1)
 
