@@ -216,8 +216,8 @@ class Axes(Axis):
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    def files2axes(self,
-                   files,
+    @staticmethod
+    def files2axes(files,
                    window=1):
 
         print("file2axes")
@@ -226,7 +226,7 @@ class Axes(Axis):
 
         for file in files:
             axes.append(
-                self.file2axis(file,
+                super().file2axis(file,
                                window=window)       
             )
         # --------------------------------------------------
