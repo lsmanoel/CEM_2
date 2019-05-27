@@ -9,6 +9,7 @@ from PySide2.QtCore import Slot
 # from PySide2.QtCore import Signal
 from PySide2.QtCore import Property
 from PySide2.QtCore import QObject
+import json
 
 # Plots configuration
 # list of styles:
