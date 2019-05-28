@@ -68,33 +68,14 @@ ApplicationWindow {
                         }
                         onDoubleClicked: {
                             console.log("Double Click in Experiments List")
-                            // PlotAxesList(experiments_list.selected.file_list).plot_axes_list() // nao funciona
-                            // plotAxesList.plot_axes_list() // tenta plotar None
-                            // plotAxesList.testbench() // o exemplo funciona
+                            // console.log(JSON.stringify(experiments_list.selected.file_list))
+                            // console.log(experiments_list.selected.file_list)
 
-                            // plotAxes.plot_axes(
-                            //     plotAxes.files2axes(
-                            //         // experiments_list.selected.file_list,
-                            //         plotAxes.files_example(), 
-                            //         1), 
-                            //     'freq_dB'
-                            // )
-                            // plotAxes.plot_file(experiments_list.selected.file_list)
-                            // plotAxes.plot_file(plotAxes.files_example())
-                            // plotAxes.plot_file(PlotAxes.files_example)
-                            // var files = plotAxes.files_example()
-                            // var files = 
-                            
-                            print(JSON.stringify(experiments_list.selected.file_list))
+                            var files = experiments_list.selected.file_list
+                            var axes = plotAxes.files2axes(files)
+                            plotAxes.plot_axes(axes)
+                            plotAxes.show()
 
-
-                            // var axes = plotAxes.files2axes()
-                            // plotAxes.plot_axes(axes)
-                            // plotAxes.show()
-
-
-
-                            // PlotAxes.plot_file()
                         }
                     }
 
@@ -107,7 +88,8 @@ ApplicationWindow {
             onCurrentItemChanged: {
                 console.log(model.get(experiments_list.currentIndex).info_dict.Title + ' selected')
                 experiments_list.selected = experiments_listModel.get(experiments_list.currentIndex)
-                console.log(experiments_list.selected)
+                // console.log('experiments_list.selected:')
+                // console.log(JSON.stringify(experiments_list.selected))
             }
         }
     }
@@ -121,9 +103,10 @@ ApplicationWindow {
             if(!output) {
                 return
             }
-            print('Opening file', output)
+            console.log('Opening file', output)
             comparison.load(output)
             experiments_listModel.append(JSON.parse(comparison.experiments_title))
+            console.log(JSON.parse(comparison.experiments_title)[0].file_list)
         }
     }
 }

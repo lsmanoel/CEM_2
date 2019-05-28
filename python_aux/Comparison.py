@@ -20,11 +20,17 @@ class Comparison(QObject):
 
     @property
     def experiments(self):
+        # print('python:')
+        # print(self._experiments_list[0]['file_list'])
+        # json.dumps()
         return self._experiments_list
 
     @Property(str)
     def experiments_title(self):
-        return json.dumps(self.experiments)
+        el = self._experiments_list.copy()
+        for i, l in enumerate(el):
+            el[i]['file_list'] = json.dumps(l['file_list'])
+        return json.dumps(el)
 
     @Slot(str)
     def load(self, filename, experiment_folder='13.05'):
@@ -37,9 +43,11 @@ class Comparison(QObject):
         def combineIntoDict(name):
             cols = [f'Board {name}', f'Legend {name}', f'File {name}']
             df[name] = df.apply(lambda row: {
-                'Board': row[cols[0]],
+                'Eut': row[cols[0]],
                 'Legend': row[cols[1]],
                 'File': row[cols[2]],
+                'Photo': 'none',
+                'Signal Freq': 2E6,
             }, axis=1)
             df.drop(cols, axis=1, inplace=True)
 
@@ -55,6 +63,7 @@ class Comparison(QObject):
                     if data['File'] is not '':
                         n = ''.join(filter(str.isdigit, data['File']))
                         data['File'] = f'../{self._experiment_folder}/ALL{n}/F{n}CH1.CSV'
+                        data['Photo'] = f'../{self._experiment_folder}/img/all{n}_13_5.jpg'
                         file_list.append(data)
                 else:
                     info_dict.update({key: data})

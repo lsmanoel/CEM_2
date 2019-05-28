@@ -226,7 +226,7 @@ class Axes(Axis):
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # @staticmethod
-    @Slot(list, result=list)
+    @Slot(str, result=list)
     def files2axes(self,
                    files,
                    window=1):
@@ -235,7 +235,7 @@ class Axes(Axis):
 
         axes = []
 
-        for file in files:
+        for file in json.loads(files):
             axes.append(
                 super().file2axis(file,
                                   window=window)
