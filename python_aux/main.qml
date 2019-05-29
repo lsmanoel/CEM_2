@@ -63,19 +63,12 @@ ApplicationWindow {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            console.log("Click in Experiments List")
                             experiments_list.currentIndex = index
                         }
                         onDoubleClicked: {
-                            console.log("Double Click in Experiments List")
-                            // console.log(JSON.stringify(experiments_list.selected.file_list))
-                            // console.log(experiments_list.selected.file_list)
-
+                            console.log("Opening selected experiment...")
                             var files = experiments_list.selected.file_list
-                            var axes = plotAxes.files2axes(files)
-                            plotAxes.plot_axes(axes)
-                            plotAxes.show()
-
+                            plotAxes.plot_file(files)
                         }
                     }
 
@@ -88,8 +81,6 @@ ApplicationWindow {
             onCurrentItemChanged: {
                 console.log(model.get(experiments_list.currentIndex).info_dict.Title + ' selected')
                 experiments_list.selected = experiments_listModel.get(experiments_list.currentIndex)
-                // console.log('experiments_list.selected:')
-                // console.log(JSON.stringify(experiments_list.selected))
             }
         }
     }

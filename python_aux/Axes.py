@@ -226,7 +226,6 @@ class Axes(Axis):
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # @staticmethod
-    @Slot(str, result=list)
     def files2axes(self,
                    files,
                    window=1):
@@ -235,13 +234,14 @@ class Axes(Axis):
 
         axes = []
 
-        for file in json.loads(files):
+        for file in files:
             axes.append(
                 super().file2axis(file,
                                   window=window)
             )
         # --------------------------------------------------
         print("len(axes): ", len(axes))
+        # print(axes)
         # ==================================================
         return axes
 
@@ -250,7 +250,6 @@ class Axes(Axis):
 
     @staticmethod
     def measurements(axes):
-
         axes_measurements = []
 
         for axis in axes:
@@ -287,15 +286,12 @@ class PlotAxes(Axes):
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # @staticmethod
-    @Slot(list)
-    def plot_axes(self,
-                  axes,
+    @staticmethod
+    def plot_axes(axes,
                   sig_f=None,
                   plot_mode=None):
 
         print("plot_axes()")
-
         axis_legend = []
         # ==================================================
         if plot_mode is None:
@@ -359,9 +355,8 @@ class PlotAxes(Axes):
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # @staticmethod
-    @Slot(result=list)
-    def files_example(self):
+    @staticmethod
+    def files_example():
         files = []
 
         files.append({
@@ -387,19 +382,16 @@ class PlotAxes(Axes):
 
         return files
 
-    @Slot()
-    def show(self):
-        plt.show()
-
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # @staticmethod
     @Slot(str)
-    def plot_file(File=None):
+    def plot_file(self,
+                  File=None):
         if File is None:
             files = PlotAxes().files_example()
         else:
-            files = File
+            files = json.loads(File)
 
         axes = PlotAxes().files2axes(files, window=1)
 
