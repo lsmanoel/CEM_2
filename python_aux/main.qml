@@ -84,7 +84,7 @@ ApplicationWindow {
                 }
             }
             highlight: Rectangle {
-                color: 'blue'
+                color: 'lightblue'
             }
             focus: true
             onCurrentItemChanged: {
