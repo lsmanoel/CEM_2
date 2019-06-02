@@ -10,7 +10,7 @@ import PlotAxes 1.0
 ApplicationWindow {
     id: window
     height: 480
-    width: 480
+    width: 640
     visible: true
     Material.theme: Material.Dark
     Material.accent: Material.Blue
@@ -23,9 +23,18 @@ ApplicationWindow {
                 onTriggered: openFile.visible = true
             }
             MenuItem {
+                text: "Close Plots"
+                onTriggered: plotAxes.close_plots()
+            }
+            MenuItem {
                 text: "Exit"
+                onTriggered: {
+                    plotAxes.close_plots()
+                    window.close(); 
+                }
             }
         }
+        
     }
 
     Comparison {
@@ -75,7 +84,7 @@ ApplicationWindow {
                 }
             }
             highlight: Rectangle {
-                color: 'grey'
+                color: 'blue'
             }
             focus: true
             onCurrentItemChanged: {

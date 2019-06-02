@@ -22,6 +22,7 @@ def main():
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
     engine = QQmlApplicationEngine('main.qml')
+    engine.quit.connect(app.quit)
 
     sys.exit(app.exec_())
 

@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from PySide2.QtCore import Slot
+from PySide2.QtCore import Property
 from PySide2.QtCore import QObject
 import json
 import conf as CONF
@@ -360,6 +361,14 @@ class PlotAxes(Axes):
             'Signal Freq': 2e6})
 
         return files
+
+    # ===========================================================
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    @Slot()
+    def close_plots(self):
+        print('Closing plots...')
+        plt.close('all')
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
