@@ -1,37 +1,12 @@
 #!/usr/bin/env python3.7
-import os
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
-
 from PySide2.QtCore import Slot
-# from PySide2.QtCore import Signal
-from PySide2.QtCore import Property
 from PySide2.QtCore import QObject
 import json
-
-# Plots configuration
-# list of styles:
-
-# plt.style.use('dark_background')
-
-#  https://matplotlib.org/gallery/style_sheets/style_sheets_reference.html
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['font.serif'] = 'Ubuntu'
-plt.rcParams['font.monospace'] = 'Ubuntu Mono'
-plt.rcParams['font.size'] = 10
-plt.rcParams['axes.labelsize'] = 10
-plt.rcParams['axes.labelweight'] = 'bold'
-plt.rcParams['xtick.labelsize'] = 8
-plt.rcParams['ytick.labelsize'] = 8
-plt.rcParams['legend.fontsize'] = 10
-plt.rcParams['figure.titlesize'] = 10
-plt.rcParams['figure.figsize'] = 10, 15
-# To look as crispy as osciloscope images:
-plt.rcParams['lines.linewidth'] = 0.01
-plt.rcParams['lines.antialiased'] = False
-# # plt.rcParams['axes.facecolor'] = 'black'
+import conf as CONF
 
 
 # ===============================================================
@@ -67,7 +42,7 @@ class Axis(QObject):
 
             # **************************************************
             # --------------------------------------------------
-            sig_T = 1/sig_f
+            sig_T = 1 / sig_f
             # Get the number of samples to perfectly match F_signal
             N = int(((len(sig) * Ts) // sig_T) *
                     round(sig_T / Ts))
@@ -76,11 +51,11 @@ class Axis(QObject):
             # **************************************************
 
             sig = sig[:N]
-            t = np.linspace(0.0, N * Ts, N) * sig_f/2
+            t = np.linspace(0.0, N * Ts, N) * sig_f / 2
 
             H = np.fft.rfft(sig * window, N)
             H_dB = 20 * np.log10(abs(H))
-            f = np.linspace(0, fs / 2, len(H)) * 2/sig_f
+            f = np.linspace(0, fs / 2, len(H)) * 2 / sig_f
 
             # --------------------------------------------------
             time_dict = {
@@ -225,7 +200,6 @@ class Axes(Axis):
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # @staticmethod
     def files2axes(self,
                    files,
                    window=1):
@@ -303,7 +277,8 @@ class PlotAxes(Axes):
 
             for i, axis in enumerate(axes):
                 ax_a.plot(axis['data']['time']['t'],
-                          axis['data']['time']['sig'])
+                          axis['data']['time']['sig'],
+                          alpha=CONF.ALPHA)
                 axis_measurements = Axis().measurements(axis)
                 ax_b.bar(i, axis_measurements['RMS'])
                 axis_legend.append(axis['info']['Legend'])
@@ -322,11 +297,12 @@ class PlotAxes(Axes):
 
                 for axis in axes:
                     plt.plot(axis['data']['freq']['f'],
-                             axis['data']['freq']['H'])
+                             axis['data']['freq']['H'],
+                             alpha=CONF.ALPHA)
                     axis_legend.append(axis['info']['Legend'])
 
-                # ax[0].set_xlim([4.6, 5.6])
                 plt.legend(axis_legend)
+                plt.tight_layout()
                 plt.xlabel('Freq (MHz)')
                 plt.ylabel('Amplitude (linear)')
             # -------------------------------------------------
@@ -335,11 +311,12 @@ class PlotAxes(Axes):
 
                 for axis in axes:
                     plt.plot(axis['data']['freq']['f'],
-                             axis['data']['freq']['H_dB'])
+                             axis['data']['freq']['H_dB'],
+                             alpha=CONF.ALPHA)
                     axis_legend.append(axis['info']['Legend'])
 
-                # ax[0].set_xlim([4.6, 5.6])
                 plt.legend(axis_legend)
+                plt.tight_layout()
                 plt.xlabel('Freq (MHz)')
                 plt.ylabel('Amplitude (dB)')
                 # -------------------------------------------------
@@ -350,6 +327,7 @@ class PlotAxes(Axes):
                     plt.title(axis['info']['Legend'])
                     plt.imshow(image)
                     plt.grid(False)
+                    plt.tight_layout()
                     plt.xticks([])
                     plt.yticks([])
 
@@ -384,7 +362,6 @@ class PlotAxes(Axes):
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # @staticmethod
     @Slot(str)
     def plot_file(self,
                   File=None):
