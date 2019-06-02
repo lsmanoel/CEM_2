@@ -289,6 +289,7 @@ class PlotAxes(Axes):
             ax_a.set_ylabel('Amplitude (V)')
 
             ax_b.set_ylabel('Amplitude (RMS)')
+            plt.tight_layout()
 
         # -------------------------------------------------
         else:
@@ -302,9 +303,9 @@ class PlotAxes(Axes):
                     axis_legend.append(axis['info']['Legend'])
 
                 plt.legend(axis_legend)
-                plt.tight_layout()
                 plt.xlabel('Freq (MHz)')
                 plt.ylabel('Amplitude (linear)')
+                plt.tight_layout()
             # -------------------------------------------------
             elif plot_mode == 'freq_dB':
                 fig = plt.figure(figsize=(6, 3))
@@ -316,9 +317,9 @@ class PlotAxes(Axes):
                     axis_legend.append(axis['info']['Legend'])
 
                 plt.legend(axis_legend)
-                plt.tight_layout()
                 plt.xlabel('Freq (MHz)')
                 plt.ylabel('Amplitude (dB)')
+                plt.tight_layout()
                 # -------------------------------------------------
             elif plot_mode == 'photo':
                 for axis in axes:
@@ -327,9 +328,9 @@ class PlotAxes(Axes):
                     plt.title(axis['info']['Legend'])
                     plt.imshow(image)
                     plt.grid(False)
-                    plt.tight_layout()
                     plt.xticks([])
                     plt.yticks([])
+                    plt.tight_layout()
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -374,12 +375,11 @@ class PlotAxes(Axes):
 
         PlotAxes().print_dict(PlotAxes().measurements(axes))
 
+        PlotAxes().plot_axes(axes, plot_mode='photo')
         PlotAxes().plot_axes(axes, plot_mode='freq_dB')
-
         PlotAxes().plot_axes(axes)
 
-        PlotAxes().plot_axes(axes, plot_mode='photo')
-
+        plt.tight_layout()
         plt.show()
 
     # ===========================================================
