@@ -50,14 +50,14 @@ ApplicationWindow {
                     height: 80
                     ColumnLayout {
                         Text {
-                            text: 'Title:' + info_dict.Title
+                            text: 'Title: ' + info_dict.Title
                         }
                         Text { 
-                            text: 'Observation:' + info_dict.Observation
+                            text: 'Observation: ' + info_dict.Observation
                         }
                         Text { 
                             wrapMode: Text.WordWrap
-                            text: 'Description:' + info_dict.Description
+                            text: 'Description: ' + info_dict.Description
                         }
                     }
                     MouseArea {
