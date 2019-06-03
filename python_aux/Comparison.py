@@ -7,7 +7,7 @@ from PySide2.QtCore import Slot
 # from PySide2.QtCore import Signal
 from PySide2.QtCore import Property
 from PySide2.QtCore import QObject
-from PySide2.QtQml import qmlRegisterType
+# from PySide2.QtQml import qmlRegisterType
 import json
 
 
@@ -54,6 +54,10 @@ class Comparison(QObject):
         for char in ['A', 'B', 'C']:
             combineIntoDict(char)
 
+        (day, mon) = experiment_folder.split('.', 2)
+        day = int(day)
+        mon = int(mon)
+
         experiments_list = []
         for observation in df.transpose().to_dict().values():
             file_list = []
@@ -63,7 +67,7 @@ class Comparison(QObject):
                     if data['File'] is not '':
                         n = ''.join(filter(str.isdigit, data['File']))
                         data['File'] = f'../{self._experiment_folder}/ALL{n}/F{n}CH1.CSV'
-                        data['Photo'] = f'../{self._experiment_folder}/img/all{n}_13_5.jpg'
+                        data['Photo'] = f'../{self._experiment_folder}/img/all{n}_{day}_{mon}.jpg'
                         file_list.append(data)
                 else:
                     info_dict.update({key: data})
