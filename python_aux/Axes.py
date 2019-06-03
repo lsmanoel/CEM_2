@@ -281,7 +281,15 @@ class PlotAxes(Axes):
                           axis['data']['time']['sig'],
                           alpha=CONF.ALPHA)
                 axis_measurements = Axis().measurements(axis)
-                ax_b.bar(i, axis_measurements['RMS'])
+                width = 1
+                ax_b.bar(i,
+                         axis_measurements['RMS'],
+                         width=width)
+                ax_b.set_xticks([], [])
+                ax_b.text(i - width / 2,
+                          axis_measurements['RMS'],
+                          str(round(axis_measurements['RMS'], 2)),
+                          rotation='horizontal')
                 axis_legend.append(axis['info']['Legend'])
 
             ax_a.set_xlim([4.6, 5.6])
@@ -290,7 +298,7 @@ class PlotAxes(Axes):
             ax_a.set_ylabel('Amplitude (V)')
 
             ax_b.set_ylabel('Amplitude (RMS)')
-            #plt.tight_layout()
+            # plt.tight_layout()
 
         # -------------------------------------------------
         else:
@@ -306,7 +314,7 @@ class PlotAxes(Axes):
                 plt.legend(axis_legend)
                 plt.xlabel('Freq (MHz)')
                 plt.ylabel('Amplitude (linear)')
-                #plt.tight_layout()
+                # plt.tight_layout()
             # -------------------------------------------------
             elif plot_mode == 'freq_dB':
                 fig = plt.figure(figsize=(6, 3))
@@ -320,7 +328,7 @@ class PlotAxes(Axes):
                 plt.legend(axis_legend)
                 plt.xlabel('Freq (MHz)')
                 plt.ylabel('Amplitude (dB)')
-                #plt.tight_layout()
+                # plt.tight_layout()
                 # -------------------------------------------------
             elif plot_mode == 'photo':
                 for axis in axes:
@@ -331,7 +339,7 @@ class PlotAxes(Axes):
                     plt.grid(False)
                     plt.xticks([])
                     plt.yticks([])
-                    #plt.tight_layout()
+                    # plt.tight_layout()
 
     # ===========================================================
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -388,7 +396,7 @@ class PlotAxes(Axes):
         PlotAxes().plot_axes(axes, plot_mode='freq_dB')
         PlotAxes().plot_axes(axes)
 
-        #plt.tight_layout()
+        # plt.tight_layout()
         plt.show()
 
     # ===========================================================
