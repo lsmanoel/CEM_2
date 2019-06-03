@@ -33,19 +33,23 @@ class Comparison(QObject):
         return json.dumps(el)
 
     @Slot(str)
-    def load(self, filename, experiment_folder='13.05'):
+    def load(self, filename):
         self._filename = filename
-        self._experiment_folder = experiment_folder
+        # self._experiment_folder = experiment_folder
 
         df = pd.read_csv(self._filename, encoding='UTF-8')
         df.replace(np.nan, '', regex=True, inplace=True)
 
         def combineIntoDict(name):
-            cols = [f'Board {name}', f'Legend {name}', f'File {name}']
+            cols = [f'Board {name}',
+                    f'Legend {name}',
+                    f'File {name}',
+                    f'Date {name}']
             df[name] = df.apply(lambda row: {
                 'Eut': row[cols[0]],
                 'Legend': row[cols[1]],
                 'File': row[cols[2]],
+                'Date': row[cols[3]],
                 'Photo': 'none',
                 'Signal Freq': 2E6,
             }, axis=1)
@@ -53,10 +57,6 @@ class Comparison(QObject):
 
         for char in ['A', 'B', 'C']:
             combineIntoDict(char)
-
-        (day, mon) = experiment_folder.split('.', 2)
-        day = int(day)
-        mon = int(mon)
 
         experiments_list = []
         for observation in df.transpose().to_dict().values():
@@ -66,8 +66,9 @@ class Comparison(QObject):
                 if key is 'A' or key is 'B' or key is 'C':
                     if data['File'] is not '':
                         n = ''.join(filter(str.isdigit, data['File']))
-                        data['File'] = f'../{self._experiment_folder}/ALL{n}/F{n}CH1.CSV'
-                        data['Photo'] = f'../{self._experiment_folder}/img/all{n}_{day}_{mon}.jpg'
+                        (day, mon, year) = data['Date'].split('/', 3)
+                        data['File'] = f'../{day}.{mon}/ALL{n}/F{n}CH1.CSV'
+                        data['Photo'] = f'../{day}.{mon}/img/all{n}_{int(day)}_{int(mon)}.jpg'
                         file_list.append(data)
                 else:
                     info_dict.update({key: data})
